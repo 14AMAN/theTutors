@@ -1,0 +1,35 @@
+<%- include("partials/header")-%>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    
+    background-image: url(../images/course_bg.jpg);
+    /* background-color: #f5f5f5; */
+}
+.abc{
+	margin-bottom: 20px;
+	border-radius: 10%;
+	width: 80%;
+}
+</style>
+
+	<div class="container">
+		<h1 class="my-4">Stories</h1>
+		<% if (stories.length === 0) { %>
+			<p>No stories found.</p>
+		<% } else { %>
+			<div class="list-group">
+				
+				<% stories.forEach((story) => { %>
+					<a href="/post/<%=story._id %>" class="list-group-item list-group-item-action abc">
+						<h5><%= story.title %></h5>
+						<p>By <%= story.author %></p>
+						<p><%= story.content.substring(0, 100) %>...</p>
+					</a>
+				<% }); %>
+			</div>
+		<% } %>
+	</div>
+
+    <%- include("partials/footer")-%>
+

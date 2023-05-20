@@ -1,0 +1,59 @@
+<%- include("partials/header")-%>
+<link rel="stylesheet" href="/css/style_tutor.css">
+
+  <style>
+  
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      /* margin-left: auto; */
+    }
+
+    h2 {
+      margin-top: 30px;
+      /* margin-left: auto; */
+      color: #666;
+    }
+
+    .success-message {
+        margin-left: 33%;
+      margin-bottom: 10px;
+      color: #28f532;
+      background-color: rgba(241, 223, 223,0.3);
+    }
+
+    form {
+      margin-top: 10px;
+    }
+    .logout{
+        margin-left: 38%;
+    }
+  </style>
+
+
+<body>
+      <form action="/student-profile" method="POST">
+    <h1>User Profile</h1>
+    <% if (message) { %>
+    <p class="success-message"><%= message %></p>
+    <% } %>
+    <h2>Welcome, <%= user.name %> !</h2>
+    
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="<%= user.name %>">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" value="<%= user.email %>">
+      <label for="mobile">Mobile:</label>
+      <input type="text" id="mobile" name="mobile" value="<%= user.mobile %>">
+      <label for="bank_ac">Degree:</label>
+      <input type="text" id="degree" name="degree" value="<%= user.degree %>">
+      
+      <input type="submit" value="Update Profile">
+      <a class="logout" href="/logout">Logout</a>
+      </form>
+      
+     
+
+<!-- Logout -->
+<!-- <a href="/logout">Logout</a> -->
+<%- include("partials/footer")-%>

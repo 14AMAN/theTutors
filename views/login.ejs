@@ -1,0 +1,25 @@
+<%- include("partials/header")-%>
+
+    <link rel="stylesheet" href="/css/style_login.css">
+
+	<h1>Login Page</h1>
+	<form method="post" action="/login">
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username" required>
+		
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+		<select id="db" name="db">
+			<option>tutor</option>
+			<option>student</option>
+		</select>
+		<input type="submit" value="Login" style="margin-left: 35%; margin-top: 6%;">
+		<a href="/forgotPassword" style="text-decoration: none;margin-left: 34%;margin-top: 5px;">Forgot Password</a>
+		<div class="error">
+			<p style="color: red; font-style: italic;margin-left: 29%;"><%= msg %></p>
+			<!-- Display error message here if login is unsuccessful -->
+		</div>
+		<a href="/studentSignUp" style="text-decoration: none;margin-left: 35%;">New Student?</a>
+	</form>
+    <%- include("partials/footer")-%>
+

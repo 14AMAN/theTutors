@@ -1,0 +1,40 @@
+<%- include("partials/header")-%>
+    
+	<link rel="stylesheet" href="/css/style_tutor.css">
+
+	<h1>Add Courses</h1>
+	<form action="/addcourses" method="post">
+		<label for="courseName">Course Name:</label>
+		<input type="text" id="courseName" name="courseName" required>
+		
+		<label for="fees">Fees:</label>
+		<input type="number" id="fees" name="fees"  required>
+		
+		<label for="classs">Class:</label>
+		<select id="classs" name="classs">
+			<option>Select a Class</option>
+			<option>Class 1</option>
+			<option>Class 2</option>
+			<option>Class 3</option>
+			<option>Class 4</option>
+			<option>Class 5</option>
+			<option>Class 6</option>
+			<option>Class 7</option>
+			<option>Class 8</option>
+			<option>Class 9</option>
+			<option>Class 10</option>
+			<option>Class 11</option>
+			<option>Class 12</option>
+
+		</select>
+
+        
+		<label for="description">Description:</label>
+		<textarea name="description" id="description" cols="20" rows="3"></textarea>
+
+		
+		
+		<p></p>
+		<input type="submit" value="addcourse">
+	</form>
+    <%- include("partials/footer")-%>

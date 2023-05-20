@@ -1,0 +1,48 @@
+<%- include("partials/header")-%>
+    
+	<link rel="stylesheet" href="/css/style_tutor.css">
+
+	<h1>Student Sign-Up</h1>
+	<form action="/studentSignUp" method="post">
+		<label for="name">Full Name:</label>
+		<input type="text" id="name" name="name" required>
+		
+		<label for="mobile">Mobile Number:</label>
+		<input type="text" id="mobile" name="mobile" required>
+		<label for="degree">Degree:</label>
+		
+		<select id="degree" name="degree">
+			<option>Select a Class</option>
+			<option>Class 1</option>
+			<option>Class 2</option>
+			<option>Class 3</option>
+			<option>Class 4</option>
+			<option>Class 5</option>
+			<option>Class 6</option>
+			<option>Class 7</option>
+			<option>Class 8</option>
+			<option>Class 9</option>
+			<option>Class 10</option>
+			<option>Class 11</option>
+			<option>Class 12</option>
+
+		</select>
+		
+		<label for="dob">Date of Birth:</label>
+		<input type="date" id="dob" name="dob" required>
+
+		<label for="email">Email Address:</label>
+		<input type="email" id="email" name="email" required>
+		
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username" required>
+
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+		
+		<label for="confirm-password">Confirm Password:</label>
+		<input type="password" id="confirm_password" name="confirm_password" required>
+		<p style="color: red; font-style:italic;"><%= msg %></p>
+		<input type="submit" value="Sign Up">
+	</form>
+    <%- include("partials/footer")-%>

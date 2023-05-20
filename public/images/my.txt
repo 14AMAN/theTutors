@@ -1,0 +1,420 @@
+************Caeser Cipher*****************
+
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    string s="";
+    string enc="",dec="";
+    int key;
+    cout<<"*********CAESER CIPHER*********"<<endl;
+    cout<<"Enter the Message : ";
+    getline(cin, s);
+    cout<<"Enter the Key : ";
+    cin>>key;
+    cout<<"The Encrypted Message is : ";
+    for(int i=0;i<s.size();i++)
+    {
+        if(s[i]==' ')
+        {
+            enc += ' ';
+        }
+        else if(s[i]>='a'&&s[i]<='z')
+        {
+            enc += ((s[i]-'a')+key)%26+'a';    
+        }
+        else if(s[i]>='A'&&s[i]<='Z')
+        {
+            enc += ((s[i]-'A')+key)%26+'A';
+        }
+        else if(s[i]>='0'&&s[i]<='9')
+        {
+            enc += ((s[i]-'0')+key)%10+'0';
+        }
+    }
+    cout<<enc<<endl;
+    cout<<"The Decrypted Message is : ";
+    for(int i=0;i<enc.size();i++)
+    {
+        if(enc[i]==' ')
+        {
+            dec += ' ';
+        }
+        else if(enc[i]>='a'&&enc[i]<='z')
+        {
+            dec += (enc[i]-'a'-key+26)%26+'a';    
+        }
+        else if(enc[i]>='A'&&enc[i]<='Z')
+        {
+            dec += (enc[i]-'A'-key+26)%26+'A';
+        }
+        else if(enc[i]>='0'&&enc[i]<='9')
+        {
+            dec += (enc[i]-'0'-key+10)%10+'0';
+        }
+    }
+    cout<<dec<<endl;
+    return 0;
+}
+
+************Substitution Cipher*****************
+
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    string s;
+    string enc="",dec="";
+    string pt="abcdefghijklmnopqrstuvwxyz";
+    string cy="qwertyuiopasdfghjklzxcvbnm";
+    string pt1="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string cy2="QWERTYUIOPASDFGHJKLZXCVBNM";
+    string num="0123456789";
+    string num1="1098765432";
+    cout<<"*********SUBSTITUTION CIPHER*********"<<endl;
+    cout<<"Enter the Message : ";
+    getline(cin, s);
+    cout<<"The Encrypted Message is : ";
+    for(int i=0;i<s.size();i++)
+    {
+        if(s[i]==' ')
+        {
+            enc += ' ';
+        }
+        else if(s[i]>='a'&&s[i]<='z')
+        {
+            enc += cy[s[i]-'a'];
+        }
+        else if(s[i]>='A'&&s[i]<='Z')
+        {
+            enc += cy2[s[i]-'A'];
+        }
+        else if(s[i]>='0'&&s[i]<='9')
+        {
+            enc += num1[s[i]-'0'];
+        }
+    }
+    cout<<enc<<endl;
+    cout<<"The Decrypted Message is : ";
+    for(int i=0;i<enc.size();i++)
+    {
+        if(enc[i]==' ')
+        {
+            dec += ' ';
+        }
+        else if(enc[i]>='a'&&enc[i]<='z')
+        {
+            for(int j=0;j<26;j++)
+            {
+                if(enc[i]==cy[j])
+                {
+                    dec += pt[j];
+                    break;
+                }
+            }
+        }
+        else if(enc[i]>='A'&&enc[i]<='Z')
+        {
+            for(int j=0;j<26;j++)
+            {
+                if(enc[i]==cy2[j])
+                {
+                    dec += pt1[j];
+                    break;
+                }
+            }
+        }
+        else if(enc[i]>='0'&&enc[i]<='9')
+        {
+            for(int j=0;j<10;j++)
+            {
+                if(enc[i]==num1[j])
+                {
+                    dec += num[j];
+                    break;
+                }
+            }
+        }
+    }
+    cout<<dec<<endl;
+    return 0;
+}
+
+************Zig-Zag Cipher*****************
+
+
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    string s;
+    vector<string> v(2);
+    string enc="";
+    string dec="";
+    cout<<"*********ZIG-ZAG CIPHER*********"<<endl;
+    cout<<"Enter the Message : ";
+    getline(cin, s);
+    cout<<"The Encrypted Message is : ";
+    for(int i=0;i<s.size();i++)
+    {
+        if(i%2==0) v[0].push_back(s[i]);
+        else v[1].push_back(s[i]);
+    }
+    for(int i=0;i<2;i++)
+        for(int j=0;j<v[i].size();j++) 
+            enc+=v[i][j];
+    cout<<enc<<endl;
+    cout<<"The Decrypted Message is : ";
+    for(int i=0;i<v[0].size();i++)
+        for(int j=0;j<2;j++) dec += v[j][i];
+    cout<<dec<<endl;
+    return 0;
+}
+
+************Rail-Fence Cipher*****************
+
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    string s;
+    int key;
+    string enc="";
+    string dec="";
+    cout<<"*********RAIL-FENCE CIPHER*********"<<endl;
+    cout<<"Enter the Message : ";
+    getline(cin, s);
+    cout<<"Enter the key : ";
+    cin>>key;
+    vector<string> v(key);
+    cout<<"The Encrypted Message is : ";
+    int i=0;
+    while(i<s.size())
+    {
+        for(int j=0;j<key&&i<s.size();j++)
+        {
+            v[j].push_back(s[i++]);
+        }
+        for(int j=key-2;j>0&&i<s.size();j--)
+        {
+            v[j].push_back(s[i++]);
+        }
+    }
+    for(int i=0;i<key;i++)
+        enc+=v[i];
+    cout<<enc<<endl;
+    cout<<"The Decrypted Message is : ";
+    cout<<s;
+    return 0;
+}
+
+************Advance Rail-Fence Cipher*****************
+
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    string s;
+    string enc="";
+    string dec="";
+    vector<string> v;
+    vector<int> per;
+    cout<<"*********PERMUTATION CIPHER*********"<<endl;
+    cout<<"Enter the Message : ";
+    getline(cin, s);
+    int key;
+    cout<<"Enter the Key : ";
+    cin>>key;
+    cout<<"Enter the permutation value on 0-based indexing"<<endl;
+    for(int i=0;i<key;i++)
+    {
+        int x;
+        cin>>x;
+        per.push_back(x);
+    }
+    cout<<"The Encrypted Message is : ";
+    for(int i=0;i<s.size();)
+    {
+        string str;
+        for(int j=0;j<key&&i<s.size();j++)
+        {
+            str.push_back(s[i++]);
+        }
+        v.push_back(str);
+    }
+    for(int i=0;i<key;i++)
+    {
+        for(int j=0;j<v.size();j++)
+        {
+            enc+=v[j][per[i]];
+        }
+    }
+    cout<<enc<<endl;
+    return 0;
+}
+
+************RSA Cipher*****************
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+// find gcd
+int gcd(int a, int b) {
+   int t;
+   while(1) {
+      t= a%b;
+      if(t==0)
+      return b;
+      a = b;
+      b= t;
+   }
+}
+int main() {
+   //2 random prime numbers
+   double p = 3;
+   double q = 11;
+   double n=p*q;    //calculate n
+   double track;
+   double phi= (p-1)*(q-1);   //calculate phi
+
+   //e is a public key stands for encrypt
+   double e=7;
+   //for checking that 1 < e < phi(n) and gcd(e, phi(n)) = 1; i.e., e and phi(n) are coprime.
+   while(e<phi) {
+      track = gcd(e,phi);
+      if(track==1)
+         break;
+      else
+         e++;
+   }
+   //d is a private key stands for decrypt
+   //choosing d such that it satisfies d*e = 1 mod phi
+  
+   double d1=1/e;
+   double d=fmod(d1,phi);
+   double message;
+   cout<<"Enter your message : ";
+   cin>>message;
+   double c = pow(message,e); //encrypt the message
+   double m = pow(c,d);
+   c=fmod(c,n);
+   m=fmod(m,n);
+   cout<<"Original Message = "<<message;
+   cout<<"\n"<<"p = "<<p;
+   cout<<"\n"<<"q = "<<q;
+   cout<<"\n"<<"n = pq = "<<n;
+   cout<<"\n"<<"phi = "<<phi;
+   cout<<"\n"<<"e = "<<e;
+   cout<<"\n"<<"d = "<<d;
+   cout<<"\n"<<"Encrypted message = "<<c;
+   cout<<"\n"<<"Decrypted message = "<<m;
+   return 0;
+}
+
+************Deffie hellman Cipher*****************
+
+#include <cmath>
+#include <iostream>
+using namespace std;
+ 
+ 
+int main()
+{
+    long long int P, G, x, a, y, b, AliceSharedKey, BobSharedKey;
+ 
+    P = 23; 
+    cout << "The value of P : " << P << endl;
+ 
+    G = 6; 
+    cout << "The value of G : " << G << endl;
+ 
+   
+    a = 4; 
+    cout << "The private key a for Alice : " << a << endl;
+ 
+    x = (long long int)pow(G,a)%P; 
+ 
+   
+    b = 3; 
+    cout << "The private key b for Bob : " << b << endl;
+ 
+    y = (long long int)pow(G,b)%P; 
+ 
+    
+    AliceSharedKey = (long long int)pow(y,a)%P;
+    BobSharedKey = (long long int)pow(x,b)%P;
+    cout << "Secret key for the Alice is : " << AliceSharedKey << endl;
+ 
+    cout << "Secret key for the Bob is : " << BobSharedKey << endl;
+ 
+    return 0;
+}
+
+
+************DSA Algorithm*****************
+#include <iostream>
+#include <string.h>
+#include <bits/stdc++.h>
+#include <openssl/sha.h>
+using namespace std;
+
+int main()
+{
+    string message;
+    hash<string> h;
+    cout<<"Enter the Message : ";
+    getline(cin, message);
+    
+    //generating key using Deffie
+    int p;
+    int q;
+    int a;
+    int b;
+    cin>>p>>q>>a>>b;
+    int x=(int)pow(q,a)%p;
+    int y=(int)pow(q,b)%p;
+    int ka=(int)pow(y,a)%p;
+    int kb=(int)pow(x,b)%p;
+    // encrypt using caeser cypher
+    string encMsg="",decMsg="";
+    string hashMessage = to_string(h(message));
+    cout<<"Hash-digest of sending message will be : "<<hashMessage<<endl;
+    //encryption of hash using caeser
+    for(int i=0;i<hashMessage.size();i++)
+    {
+        if(hashMessage[i]==' ') encMsg+=' ';
+        else if(hashMessage[i]>='a'&&hashMessage[i]<='z') encMsg+=((hashMessage[i]-'a')+ka)%26+'a';
+        else if(hashMessage[i]>='A'&&hashMessage[i]<='Z') encMsg+=((hashMessage[i]-'A')+ka)%26+'A';
+        else if(hashMessage[i]>='0'&&hashMessage[i]<='9') encMsg+=((hashMessage[i]-'0')+ka)%10+'0';
+    }
+    cout<<"Encrypted hashDigest is : "<<encMsg<<endl;
+    //this info sent to reciever message + encrypted hash digest
+    for(int i=0;i<encMsg.size();i++)
+    {
+        if(encMsg[i]==' ') decMsg+=' ';
+        else if(encMsg[i]>='a'&&encMsg[i]<='z') decMsg+=((encMsg[i]-'a')-kb+26)%26+'a';
+        else if(encMsg[i]>='A'&&encMsg[i]<='Z') decMsg+=((encMsg[i]-'A')-kb+26)%26+'A';
+        else if(encMsg[i]>='0'&&encMsg[i]<='9') decMsg+=((encMsg[i]-'0')-kb+10)%10+'0';
+    }
+    cout<<"Decrypted hash digest is : "<<decMsg<<endl;
+    string hashMessageRecieved = to_string(h(message));
+    cout<<"Hash-digest of recieved message will be : "<<hashMessageRecieved<<endl;
+    if(decMsg==hashMessageRecieved) cout<<"The message is valid."<<endl;
+    else cout<<"The message is invalid."<<endl;
+    return 0;
+}

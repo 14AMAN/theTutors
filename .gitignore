@@ -1,0 +1,45 @@
+# ignore node_modules directory
+node_modules/
+
+# ignore logs and other generated files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ignore build artifacts
+build/
+dist/
+
+# ignore IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# ignore environment files
+.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ignore dependencies installed via npm or yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ignore .DS_Store (macOS file)
+.DS_Store
+
+# ignore Thumbs.db (Windows thumbnail database)
+Thumbs.db
+
+# ignore .cache directory
+.cache/
+
+# ignore .next directory (for Next.js projects)
+.next/

@@ -1,0 +1,38 @@
+
+<%- include("partials/header")-%>
+    
+	<link rel="stylesheet" href="/css/style_tutor.css">
+    
+	<h1>Tutor Sign-Up</h1>
+	<form action="/tuttor_signup" method="post">
+		<label for="full-name">Full Name:</label>
+		<input type="text" id="name" name="name" required>
+		
+		<label for="mobile">Mobile Number:</label>
+		<input type="text" id="mobile" name="mobile" required>
+
+		<label for="email">Email Address:</label>
+		<input type="email" id="email" name="email" required>
+
+		<label for="bank_Ac">Bank Account Number:</label>
+  		<input type="number" id="bank_Ac" name="bank_Ac" required>
+
+ 		<label for="ifsc">IFSC Code:</label>
+ 		<input type="text" id="ifsc" name="ifsc" required>
+
+ 		<label for="upi_id">UPI ID:</label>
+  		<input type="text" id="upi_id" name="upi_id" required>
+		
+		<label for="username">User name:</label>
+		<input type="username" id="username" name="username" required>
+
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" required>
+		
+		<label for="confirm-password">Confirm Password:</label>
+		<input type="password" id="confirm-password" name="confirm_password" required>
+		<p style="color: red; font-style:italic;"><%= msg %></p>
+		<input type="submit" value="Sign Up">
+	</form>
+    <%- include("partials/footer")-%>
+

@@ -1,0 +1,137 @@
+<%- include("partials/header")-%>
+<style>
+   body {
+    background-image: url(../images/course_bg.jpg);
+
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  /* background-color: #f2f2f2; */
+}
+
+.container {
+  width: 50%;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #aaa;
+}
+
+h1 {
+  font-size: 36px;
+  margin: 20px;
+}
+
+h2 {
+  font-size: 24px;
+  margin: 10px 0;
+}
+
+form label {
+  display: inline-block;
+  width: 150px;
+  margin-bottom: 10px;
+}
+
+form input, form textarea {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  width: 70%;
+  margin-bottom: 10px;
+}
+
+form textarea {
+  height: 100px;
+}
+
+form button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+form button:hover {
+  background-color: #0062cc;
+}
+
+.rating {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 10px 0;
+  font-size: 24px;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  color: #ddd;
+  float: right;
+}
+
+.rating label:before {
+  content: "\2605";
+  margin-right: 5px;
+}
+
+.rating input:checked ~ label,
+.rating input:checked ~ label ~ label {
+  color: #FFD700;
+}
+
+.rating:hover label:before,
+.rating:hover ~ label:before {
+  content: "\2605";
+  color: #FFD700;
+}
+
+
+
+</style>
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1>Add a Review</h1>
+      <hr>
+      <form method="POST" action="/writereview">
+        <div class="form-group">
+            <label for="course">Course:</label>
+          <input type="text" class="form-control" id="course" name="course" required>
+
+        </div>
+        <div class="form-group">
+          <label for="tutor">Tutor:</label>          
+          <input type="text" class="form-control" id="tutor" name="tutor" required>
+
+        </div>
+        <div class="form-group">
+            
+            <label for="rating">Rating:</label>
+          <select class="form-control" id="rating" name="rating" required>
+            <option value="">Choose a Rating</option>
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Good</option>
+            <option value="3">3 - Average</option>
+            <option value="2">2 - Below Average</option>
+            <option value="1">1 - Poor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="review">Review:</label>
+          <textarea class="form-control" id="review" name="review" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include("partials/footer")-%>

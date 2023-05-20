@@ -1,0 +1,111 @@
+<%- include("partials/header")-%>
+    <div class="banner">
+      <h1 style="margin-left: 50%; padding-bottom: 10px;">Learn something new today</h1>
+
+      <p style="margin-left: 50%;">Choose from our wide selection of courses</p>
+      <form class="d-flex" style="margin-left: 50%; margin-bottom: 2px;" action="/search" method="post">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="cours">
+        <button class="btn 00 btn-danger" type="submit">Search</button>
+        
+      </form>
+      <small style="color: red; margin-left: 40%;"><i><%= msg %></i></small>
+    
+      <a href="/course/all" style="margin-left: 50%;">View Courses</a>
+    </div>
+    <div style="margin-left: 38%; margin-top: 20px; margin-bottom: 20px;">
+      <h4 >Experience UrbanPro Live Classes</h4>
+    </div>
+
+
+    <div class="container text-center">
+      <div class="row row-cols-4">
+        <div class="col">
+          
+    <div class="card" style="width: 20rem;">
+      <img src="/images/205121042.JPG" class="card-img-top" alt="...">
+      
+      <div class="card-body">
+        <h5 class="card-title">H. O. D.</h5>
+        <p class="card-text">Business and Entrepreneurship Department.</p>
+        <a href="/hod/42" class="btn btn-primary">Visit Profile</a>
+      </div>
+      
+    </div>
+        </div>
+        <div class="col">
+          
+    <div class="card" style="width: 20rem;">
+      <img src="/images/205121032.JPG" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">H. O. D.</h5>
+        <p class="card-text">Technology and Programming Department.</p>
+        <a href="/hod/32" class="btn btn-primary">Visit Profile</a>
+      </div>
+      
+    </div>
+        </div>
+        <div class="col">
+          
+    <div class="card" style="width: 20rem;">
+      <img src="/images/205121106.JPG" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">H. O. D.</h5>
+        <p class="card-text">Marketing and Sales <br> Department.</p>
+        <a href="/hod/106" class="btn btn-primary">Visit Profile</a>
+      </div>
+      
+    </div>
+        </div>
+        <div class="col">
+          
+    <div class="card" style="width: 20rem;">
+      <img src="/images/205121028.JPG" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">H. O. D.</h5>
+        <p class="card-text">Creative    Arts    and    Design <br>   Department.</p>
+        <a href="/hod/28" class="btn btn-primary">Visit Profile</a>
+      </div>
+      
+    </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div style="margin-left: 38%; margin-top: 40px; margin-bottom: 5px;">
+      <h4 >Categories of courses available. </h4>
+    </div>
+    <div id="categories" class="categories">
+      <div class="category">
+        <h2>Business and Entrepreneurship</h2>
+        <p>Learn the skills you need to start and grow your own business</p>
+        <form method="get" action="/course/Business">
+        <button type="submit" class="btn btn-primary compose-btn"  value="Business">View Courses</button>
+        </form>
+      </div>
+      <div class="category">
+        <h2>Technology and Programming</h2>
+        <p>
+          Stay up-to-date with the latest technology and programming
+        </p>
+        <form method="get" action="/course/Techno">
+        <button type="submit" class="btn btn-primary compose-btn"  value="Techno">View Courses</button>
+        </form>
+      </div>
+      <div class="category">
+        <h2>Marketing and Sales</h2>
+        <br>
+        <p>Master the art of marketing and sales to increase your revenue</p>
+        <form method="get" action="/course/Marketing">
+        <button type="submit" class="btn btn-primary compose-btn"  value="Marketing">View Courses</button>
+        </form>
+      </div>
+      <div class="category">
+        <h2>Creative Arts and Design</h2>
+        <p>Express your creativity and learn new skills in art and design</p>
+        <form method="get" action="/course/Creative">
+        <button type="submit" class="btn btn-primary compose-btn"  value="Creative">View Courses</button>
+        </form>
+      </div>
+    </div>
+    <%- include("partials/footer")-%>
