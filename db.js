@@ -34,7 +34,15 @@ const reviewSchema = new schema({
     title: String,
     content : String    
   });
-
+// videos
+const videoSchema = new schema({
+  title: String,
+  description: String,
+  filename: String,
+  contentType: String,
+  uploadDate: { type: Date, default: Date.now },
+  data: Buffer // Buffer to store file data
+});
 // courses
 const coursesSchema = new schema({
     courseName: String,
@@ -56,15 +64,7 @@ const coursesSchema = new schema({
           oneStar: 0
         }
       },
-      videos: [
-        {
-          title: String,
-          description: String,
-          filename: String,
-          contentType: String,
-          uploadDate: { type: Date, default: Date.now }
-        }
-      ],
+      videos: [videoSchema],
       average_rating : {
         type: Number,
         min: 0,
@@ -138,7 +138,7 @@ const tutorSchema = new schema({
 });
 
 // schema
-const course = mongoose.model("course",coursesSchema);
+const courseDB = mongoose.model("course",coursesSchema);
 const  story = mongoose.model("story",storySchema);
 // Apply passport-local-mongoose to the tutor and student models
 tutorSchema.plugin(passportLocalMongoose);
@@ -147,12 +147,13 @@ studentSchema.plugin(passportLocalMongoose);
 // Create the tutor and student models
 const tutor = mongoose.model("tutor",tutorSchema);
 const student = mongoose.model("student" , studentSchema);
+const videos = mongoose.model("videos" , videoSchema);
 
 const transaction = mongoose.model("transaction" , transactionSchema);
 const notification = mongoose.model("notification" , notifySchema);
 const review = mongoose.model("review" , reviewSchema);
 
 module.exports = {
-    course,    story,tutor,student,transaction,notification,review
+    courseDB,    story,tutor,student,transaction,notification,review,videos
     // Add other exported functions as needed
   };

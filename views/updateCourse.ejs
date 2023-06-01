@@ -1,0 +1,46 @@
+<%- include("partials/header")-%>
+	<link rel="stylesheet" href="/css/style_tutor.css">
+    <style>
+        .container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+    </style>
+
+    <body>
+        <%= console.log(course.courseName) %>
+        <h1>Update Course</h1>
+        <form action="/course/<%= course._id %>" method="POST" >
+            <label for="courseName">Course Name:</label>
+            <input type="text" id="courseName" name="courseName" value="<%= course.courseName %>" required><br>
+    
+            <label for="fees">Fees:</label>
+            <input type="number" id="fees" name="fees" value="<%= course.fees %>" required><br>
+    
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required><%= course.description %></textarea><br>
+    
+            <label for="classs">Class:</label>
+            <input type="text" id="classs" name="classs" value="<%= course.classs %>" required><br>
+    
+            
+            
+            <input type="submit" value="Update Course">
+            
+        </form>
+            <form action="/videolibrary/<%= course._id %>" method="GET">
+                <input type="submit" value ="Go to Video Library"/>
+            </form>
+    </body>
+    
+
+<%- include("partials/footer")-%>

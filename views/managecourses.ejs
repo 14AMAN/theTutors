@@ -1,7 +1,20 @@
 <%- include("partials/header")-%>
 
 <link rel="stylesheet" href="/css/style_tutor.css">
-
+<body>
+    <h1>The courses you are Offering are:</h1>
+    <ul>
+        <!-- -->
+        
+      <% courses.forEach(course => { %> 
+        <li>
+          <h3><%= course.courseName %></h3>
+          <p><%= course.description %></p>
+          <a href="/course/<%= course._id %>">View Course</a>
+        </li>
+      <% }); %>
+    </ul>
+  </body>
 
 
 <%- include("partials/footer")-%>
