@@ -6,19 +6,12 @@
 
   <!-- Form to add a new video -->
   <h2>Add New Video</h2>
-  <form action="/videolibrary" method="POST" enctype="multipart/form-data">
+  <form action="/videolibrary/<%= id %>" method="POST" enctype="multipart/form-data">
     <label for="title">Title:</label>
     <input type="text" id="title" name="title" required><br>
 
     <label for="description">Description:</label>
     <textarea id="description" name="description" required></textarea><br>
-
-    <label for="filename">Filename:</label>
-    <input type="text" id="filename" name="filename" required><br>
-
-    <label for="contentType">Content Type:</label>
-    <input type="text" id="contentType" name="contentType" required><br>
-
     
   <label for="video">Video:</label>
   <input type="file" id="video" name="video" required><br>
@@ -28,8 +21,7 @@
 
   <!-- Table to display existing videos -->
   
-    <% console.log(videos.length); %>
-    <% if (videos.length > 0) { %>
+    <% if (videos) { %>
         <h2>Existing Videos</h2>
         <% if (videos.length > 0) { %>
           <table>
@@ -38,7 +30,6 @@
                 <th>Title</th>
                 <th>Description</th>
                 <th>Filename</th>
-                <th>Content Type</th>
                 <th>Video</th>
                 <th>Actions</th>
               </tr>
@@ -49,10 +40,9 @@
                   <td><%= video.title %></td>
                   <td><%= video.description %></td>
                   <td><%= video.filename %></td>
-                  <td><%= video.contentType %></td>
                   <td>
                     <video width="320" height="240" controls>
-                      <source src="/path/to/videos/<%= video.filename %>" type="<%= video.contentType %>">
+                        <source src="/uploads/<%= video.filename %>" type="<%= video.contentType %>">
                       Your browser does not support the video tag.
                     </video>
                   </td>

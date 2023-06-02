@@ -12,7 +12,6 @@ const bcrypt = require("bcrypt");
 const app = express();
 // upload files
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' });
 
 // Import the crypto module
 const crypto = require('crypto');
@@ -24,11 +23,24 @@ function generateResetToken() {
   const token = crypto.randomBytes(20).toString('hex');
   return token;
 }
-
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+// const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: 'public/uploads/',
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const filename = uniqueSuffix + '-' + file.originalname;
+    cb(null, filename);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 
 const { courseDB, story,tutor,student,transaction,notification,review,videos } = require('./db');
 
@@ -501,19 +513,35 @@ courseDB.findById(id)
   
 });
 // post request of Updatecoursesapp.post('/course/:param', async function(req, res) {
+  // update must be done to tutor as wel as course
   app.post('/course/:param',async function(req, res) {
     if (req.isAuthenticated() && req.user.role === 'tutor') {
       const courseId = req.params.param;
+      const TutorId = req.user._id;
       const { courseName, fees, description, classs } = req.body;
       
-      console.log(courseName, fees, description, classs);
+      // console.log(courseName, fees, description, classs);
      
       
       try {
         // Update the course data in the database or any other storage
         const updatedCourse = await courseDB.findOneAndUpdate({ _id: courseId }, { courseName, fees, description, classs}, { new: true });
+        const updatedTutor = await tutor.findOneAndUpdate(
+          { _id: TutorId, 'course._id': courseId },
+          {
+            $set: {
+              'course.$.courseName': courseName,
+              'course.$.fees': fees,
+              'course.$.description': description,
+              'course.$.classs': classs
+            }
+          },
+          { new: true }
+        );
+      
+        // console.log(updatedTutor);
   
-        if (updatedCourse) {
+        if (updatedCourse && updatedTutor) {
           // Redirect to the updated course page or any other desired destination
           res.redirect(`/course/${updatedCourse._id}`);
         } else {
@@ -531,59 +559,58 @@ courseDB.findById(id)
 // video library
 app.get('/videolibrary/:param',async function(req,res){
   if(req.isAuthenticated() && req.user.role === 'tutor'){
-    const courseId = req.params.param;
-    try {   
-      const course = await courseDB.findById(courseId);
-      const videos = course.videos; // Assuming 'videos' is the array field in the 'courses' schema
-      console.log(videos);
-      console.log(videos.length);
-      res.render('videolibrary',{videos:videos});
-    } catch (error) {
-      res.status(500).json({ error: 'Error retrieving videos from video library' });
-    }
+    const id = req.params.param;
+    courseDB.findById(id).then(course=>{
+    res.render("videolibrary",{videos:course.videos,id:id});
+});
+      // let videos = course.videos;
+      // console.log(course);
+      
+     
   } else {
     res.redirect('/login');
   }
   
 });
 app.post('/videolibrary/:param', upload.single('video'), async (req, res) => {
-  if(req.isAuthenticated() && req.user.role === 'tutor'){
+  if (req.isAuthenticated() && req.user.role === 'tutor') {
     const courseId = req.params.param;
-  try {
-    // Process form data and uploaded video
-    const { courseId, title, description, filename, contentType } = req.body;
-    const videoData = req.file;
+    try {
+      // Process form data and uploaded video
+      const { title, description } = req.body;
+      
+      const filename = req.file.filename;
+      
 
-    // Find the course by ID
-    const course = await Course.findById(courseId);
+      const course = await courseDB.findById(courseId);
 
-    // Create a new video object with the received data
-    const newVideo = {
-      title,
-      description,
-      filename,
-      contentType,
-      uploadDate: Date.now(),
-      data: videoData.buffer
-    };
 
-    // Push the new video into the videos array of the course
-    course.videos.push(newVideo);
+      // Create a new video object with the received data
+      const newVideo = new videos({
+        title,
+        description,
+        filename,
+        uploadDate: Date.now()
+      });
 
-    // Save the course with the updated videos array
-    await course.save();
+      // Push the new video into the videos array of the course
+      course.videos.push(newVideo);
 
-    // Redirect to the video library or display a success message
-    res.redirect('/videolibrary');
-  } catch (error) {
-    console.error('Error uploading video:', error);
-    // Handle the error and display an error message
-    res.render('error', { error: 'Error uploading video' });
+      // Save the tutorDB
+      await course.save();
+
+      // Redirect to the video library or display a success message
+      res.redirect(`/videolibrary/${courseId}`);
+    } catch (error) {
+      console.error('Error uploading video:', error);
+      // Handle the error and display an error message
+      res.status(500).json({ error: 'Error uploading video' });
+    }
+  } else {
+    res.redirect('/login');
   }
-}else{
-  res.redirect('/login');
-}
 });
+
 
 // buy
 app.post('/buy',function(req,res){

@@ -39,9 +39,8 @@ const videoSchema = new schema({
   title: String,
   description: String,
   filename: String,
-  contentType: String,
-  uploadDate: { type: Date, default: Date.now },
-  data: Buffer // Buffer to store file data
+  uploadDate: { type: Date, default: Date.now }
+  
 });
 // courses
 const coursesSchema = new schema({
