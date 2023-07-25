@@ -18,10 +18,7 @@ dotenv.config(); // Load environment variables from .env file
 
 // razorpay
 const Razorpay = require('razorpay');
-const razorpay = new Razorpay({
-  key_id: 'rzp_test_gweFtrGgAHg1sk',
-  key_secret: 'ed25oiNkHLDzN3pLIfE1SsRc',
-});
+
 
 // Import the crypto module
 const crypto = require('crypto');
