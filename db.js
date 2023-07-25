@@ -24,7 +24,7 @@ const storySchema = new schema({
   name : String,
   content : String,
   photo: {
-    data: Buffer,
+    filename : String,
     contentType: String
   }
 });
@@ -42,6 +42,8 @@ const videoSchema = new schema({
   uploadDate: { type: Date, default: Date.now }
   
 });
+// photo
+
 // courses
 const coursesSchema = new schema({
     courseName: String,
@@ -70,8 +72,9 @@ const coursesSchema = new schema({
         max: 5,
       },
       description : String,
-      classs : String
-  
+      classs : String,
+      teacher: { type: schema.Types.ObjectId, ref: 'tutor' },
+      teacher_name : String
     
   });
 //   Notification
@@ -82,11 +85,11 @@ const notifySchema = new schema({
 });
 // Transaction
 const transactionSchema = new schema({
-    
-    course : coursesSchema,
-    
-    tutor : String,
-    amount : Number
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'course' },
+  paymentId: String,
+  std: { type: mongoose.Schema.Types.ObjectId, ref: 'student' },
+  stdName: String,
+ 
 });
 
   // students
@@ -102,9 +105,9 @@ const studentSchema = new schema({
     }
     ,
     photo: {
-        data: Buffer,
-        contentType: String
-      },
+      filename : String,
+      contentType: String
+    },
       degree: String,
       dob : Date,
       purchasedCourse : [coursesSchema],
@@ -129,11 +132,11 @@ const tutorSchema = new schema({
   ifsc : String,
   upi_id : String,
   course :[coursesSchema],
-  student : [studentSchema],
   photo: {
-    data: Buffer,
+    filename : String,
     contentType: String
-  }
+  },
+  about : String
 });
 
 // schema

@@ -56,34 +56,89 @@
     background-color: #0062cc;
   }
 </style>
-
-<h1><u>Available Courses</u></h1>
-
-<% console.log(course) %>
-
-  <h2><%= course.courseName %></h2>
-  <h3>Tutors:</h3>
-  <% course.forEach(function(tutor) { %>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm">
-          <h4 ><%= tutor.name %></h4>
-        
+<% if (course.length > 0) { %>
+  <h1><u>Available Courses for <%= course[0].classs  %></u></h1>
+  
+    <h3>Tutors:</h3>
+    <% course.forEach(function(tutor) { %>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm">
+            <h4><%= tutor.courseName %></h4>
+          </div>
+          <div class="col-sm">
+            <p><strong>Tutor :</strong> <%= tutor.teacher_name %></p>
+          </div>
+          <div class="col-sm">
+            <p><strong>Price :</strong> Rs.<%= tutor.fees %></p>
+          </div>
+          <div class="col-sm">
+            <form onsubmit="event.preventDefault(); makePayment('<%= tutor._id %>', '<%= tutor.fees %>');">
+              <input type="hidden" name="courseId" value="<%= tutor._id %>">
+              <input type="hidden" name="amount" value="<%= tutor.fees %>">
+              <% if (user) { %>
+                <button type="submit">Buy</button>
+              <% } else { %>
+                <button type="submit"  onclick="redirectToLogin()">Please log in to proceed</button>
+              <% } %>
+              
+              <script>
+                function redirectToLogin() {
+                  window.location.href = '/login'; // Replace '/login' with the actual login page URL
+                }
+              </script>
+              
+              
+              
+            </form>
+            
+          </div>
+        </div>
       </div>
-      <div class="col-sm">
-       <p> <strong>Price :</strong> Rs.<%= tutor.fees %></p>
-      </div>
-      <div class="col-sm">
-        <form action="/buy" method="post">
-          <input type="hidden" name="courseId" value="<%= tutor._id %>">
-          <button type="submit">Buy</button>
-        </form>
-      </div>
-    </div>
-  </div>
-  <% }); %>
+    <% }); %>
+  <% } else { %>
+    <p>Finding teachers for this class</p>
+  <% } %>
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function makePayment(courseId, amount) {
+      
+      fetch('/payment', {
+        method: 'POST',headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ courseId: courseId }) // Send the courseId to the server
+    }).then((response) => response.json())
+.then((order) => {
+  const options = {
+    key: 'rzp_test_gweFtrGgAHg1sk',
+    amount: amount * 100, // Assuming the amount is in rupees
+    currency: 'INR',
+    name: 'Tutors Academy',
+    description: 'nothing',
+    image: 'https://yourcompany.com/logo.png', // URL of your logo
+    order_id: order.id,
+    // handling the success
+    handler: function (response) {
+    const paymentId = response.razorpay_payment_id;
+    window.location.href = `/payment-success?payment_id=${paymentId}&courseId=${courseId}`;
+},
 
+  };
 
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+})
+.catch((error) => {
+  console.error(error);
+  alert('An error occurred');
+});
+
+    }
+  </script>
+  
+  
   <div>
     <div style="margin-left: 10%;">
       
@@ -92,7 +147,6 @@
     
     <hr>
   </div>
-
 
 <%- include("partials/footer")-%>
 

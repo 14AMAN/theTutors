@@ -12,6 +12,16 @@ const bcrypt = require("bcrypt");
 const app = express();
 // upload files
 const multer  = require('multer')
+// environment varibale
+const dotenv = require('dotenv');
+dotenv.config(); // Load environment variables from .env file
+
+// razorpay
+const Razorpay = require('razorpay');
+const razorpay = new Razorpay({
+  key_id: 'rzp_test_gweFtrGgAHg1sk',
+  key_secret: 'ed25oiNkHLDzN3pLIfE1SsRc',
+});
 
 // Import the crypto module
 const crypto = require('crypto');
@@ -42,7 +52,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-const { courseDB, story,tutor,student,transaction,notification,review,videos } = require('./db');
+const { 
+  courseDB, story,tutor,student,transaction,notification,review,videos } = require('./db');
 
 
 
@@ -88,7 +99,9 @@ app.use(function(req, res, next) {
 // home page
 app.get("/",function(req,res){
     // let msg = "";
-    res.render("index", {msg : ""});
+    if(req.user)
+    console.log(req.user.name);
+    res.render("index", {msg : "",tutor1:req.user});
   
  
 });
@@ -188,13 +201,14 @@ app.post("/tutor-profile", async function(req, res) {
   // Check if user is authenticated
   if (req.isAuthenticated() && req.user.role === 'tutor') {
     // Get the updated profile data from the request body
-    const { name, email, mobile, bank_ac, ifsc, upi_id } = req.body;
+    console.log(req.user.role);
+    const { name, email, about,mobile, bank_ac, ifsc, upi_id } = req.body;
 
     try {
       // Find the user by their id and update their profile information
       const updatedUser = await tutor.findOneAndUpdate(
         { _id: req.user._id },
-        { name, email, mobile, bank_Ac: bank_ac, ifsc, upi_id },
+        { name, email,about, mobile, bank_Ac: bank_ac, ifsc, upi_id },
         { new: true }
       );
 
@@ -278,7 +292,7 @@ app.get("/signupasatutor",function (req,res) {
 });
 // Tutor signup route
 app.post("/tuttor_signup", function(req, res) {
-  const { username,name, email, mobile, bank_Ac, ifsc, upi_id, password, confirm_password } = req.body;
+  const { username,name,about, email, mobile, bank_Ac, ifsc, upi_id, password, confirm_password } = req.body;
 
   // Check if password and confirm_password match
   if (password !== confirm_password) {
@@ -290,7 +304,7 @@ app.post("/tuttor_signup", function(req, res) {
 console.log("tutor");
   // Create a new tutor object
   const newTutor = new tutor({
-    username,    name,    email,    mobile,    bank_Ac,    ifsc,    upi_id
+    username,    name, about,    email,    mobile,    bank_Ac,    ifsc,    upi_id
   });
 
     async function save(){   // Save the tutor to the database
@@ -486,6 +500,7 @@ foundUser.save(function(err) {
 // tutor course manager
 app.get('/managecourses',function(req,res){
   if (req.isAuthenticated()&& req.user.role === 'tutor') {
+    // console.log(req.user.course);
     res.render("managecourses",{msg:"",courses:req.user.course});
   }
   else{
@@ -610,16 +625,108 @@ app.post('/videolibrary/:param', upload.single('video'), async (req, res) => {
     res.redirect('/login');
   }
 });
+function getCourseDetails(courseId) {
+  return courseDB.findById(courseId)
+    .exec()
+    .then((course) => {
+      return course; // The course object will be returned if found, or null if not found
+    })
+    .catch((error) => {
+      console.error('Error while fetching course details:', error);
+      return null; // Handle the error gracefully and return null or an error object
+    });
+}
 
+function createOrder(amountInPaisa) {
+  // console.log(typeof amountInPaisa);
+  const options = {
+    amount: amountInPaisa,
+    currency: 'INR',
+    receipt: 'order_receipt',
+    payment_capture: 1,
+  };
 
-// buy
-app.post('/buy',function(req,res){
-  const id = req.body.courseId;
-  console.log(id);
-  tutor.find({_id:id}).then(result=>{
-    console.log(result.length);
-    res.render('checkout',{ person: result[0]});
+  return new Promise((resolve, reject) => {
+    razorpay.orders.create(options, (err, order) => {
+      if (err) {
+        console.error(err);
+        reject(new Error('An error occurred while creating the order.'));
+      } else {
+        console.log(order);
+        resolve(order);
+      }
+    });
   });
+}
+
+// Define a route for handling course payment
+app.post('/payment', (req, res) => {
+  if(req.isAuthenticated() && req.user.role=='student'){
+  // Here, you can calculate the amount on the server-side based on the courseId
+  // and fetch the relevant course information from the database
+  const courseId = req.body.courseId;
+  // You would need to implement a function to fetch course details based on the courseId
+  const course = getCourseDetails(courseId);
+
+  if (!course) {
+    return res.status(404).json({ error: 'Course not found' });
+  }
+
+  const amountInRupees = course.fees;
+  const amountInPaisa = amountInRupees * 100;
+
+  // You can also set other details like currency, name, description, image, etc. here
+
+  // Create an order on Razorpay (server-side) and get the order ID
+  // In a real implementation, you'll use a payment gateway API to create the order
+  createOrder(amountInPaisa)
+  .then((order) => {
+    // Send the order details (order ID) back to the client-side
+    res.json({ id: order.id });
+  })
+  .catch((error) => {
+    res.status(500).json({ error: error.message });
+  });
+}else{
+  res.redirect("/login");
+}
+});
+async function handlePaymentSuccess(paymentId, courseId, sID, name) {
+  try {
+    // Assuming you have a 'transaction' object that interacts with your database
+    const courseData = { courseId: courseId, paymentId: paymentId, std: sID, stdName: name };
+
+    // Use the Transaction model to create a new document and save it to the database
+    const tranc = new transaction(courseData);
+    await tranc.save();
+    console.log('Transaction saved successfully.');
+
+    // Assuming you have a 'student' object representing the student's collection in your database
+    // Here, 'coursesSchema' is the schema definition for courses in your database
+    const studentData = { _id: sID, name: name, courses: [courseData] };
+    await student.updateOne({ _id: sID }, { $push: { courses: courseData } });
+    console.log('Course added to student successfully.');
+  } catch (error) {
+    console.error('Error while saving transaction and updating student:', error);
+    // You can handle the error here or rethrow it to let the calling code handle it
+    throw error;
+  }
+}
+
+
+// Define a route for handling payment success
+app.get('/payment-success', (req, res) => {
+  if(req.isAuthenticated() && req.user.role=='student'){
+  // Handle the success case here, e.g., update the payment status in the database
+  const paymentId = req.query.payment_id;
+  const courseId = req.query.courseId;
+  // You would need to implement a function to handle payment success and update the database
+  handlePaymentSuccess(paymentId, courseId ,req.user._id, req.user.name );
+
+  res.send('Payment successful!'); // You can redirect to a success page instead
+  }else{
+    res.redirect("/login");
+  }
 });
 
 
@@ -646,17 +753,6 @@ app.get("/post/:param",function(req,res){
   
   });
 
-// Paid Courses
-app.get("/courses/:param",function(req,res){
-  const param = req.params.param;
-  console.log(param);
-  
-    course.find().then(result=>{
-      res.render('course',{course:result});
-    });
-  
-});
-
 // add courses`
 app.get('/addcourses',function(req,res){
   if (req.isAuthenticated()&& req.user.role === 'tutor') {
@@ -671,7 +767,7 @@ app.post('/addcourses',function(req,res){
     const { courseName, fees, classs, description } = req.body;
   
   const addCourse = new courseDB({
-    courseName, fees, classs, description });
+    courseName, fees, classs, description,teacher:req.user._id ,  teacher_name: req.user.name });
   addCourse.save().then(savedCourse => {
     // Course saved successfully
     // console.log("Course saved:", savedCourse);
@@ -701,6 +797,36 @@ app.post('/addcourses',function(req,res){
 }
 });
 
+// Views Courses to students
+
+app.get("/courses/:param",function(req,res){
+  const param = req.params.param;
+  
+
+async function getCoursesByClass(className) {
+  try {
+    const courses = await courseDB.find({ classs: "Class "+className });
+    return courses;
+  } catch (error) {
+    console.error('Error retrieving courses:', error);
+    throw error;
+  }
+}
+
+
+getCoursesByClass(param)
+  .then(courses => {
+    res.render('searchcourse',{course:courses})
+    
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+  
+   
+  
+});
 
 
 app.get('/addstories',function(req,res){
@@ -744,131 +870,6 @@ app.post('/search',function(req,res){
   }
 });
 });
-
-//HOD
-let hod28, hod32, hod42, hod106;
-
-hod28 = {
-  name: 'Ashay Jain',
-  department: 'Creative Arts and Design',
-  photo : '205121028',
-  email: 'dr.ashay@urbanpro.edu',
-  phone: '555-1234',
-  bio: 'Ashay Jain is the Head of the Creative Arts and Design Department at UrbanPro.',
-  work: [
-      {
-          position: 'Associate Professor',
-          company: 'Oxford University',
-          years: '2010-2022'
-      },
-      {
-          position: 'Assistant Professor',
-          company: 'Canbridge University',
-          years: '2005-2010'
-      },
-      {
-          position: 'Postdoctoral Researcher',
-          company: 'Hyderabad Research Institute',
-          years: '2002-2005'
-      }
-  ]
-};
-
-hod32 = {
-  name: 'Avish Mittal',
-  department: 'Technology and Programming',
-  photo : '205121032',
-  email: 'Dr.mittal@urban.edu',
-  phone: '555-1235',
-  bio: 'Avish Mittal is the Head of the Technology and Programming Department at Example University.',
-  work: [
-      {
-          position: 'Associate Professor',
-          company: 'Banaras Hindu University',
-          years: '2012-2022'
-      },
-      {
-          position: 'Assistant Professor',
-          company: 'Jawaharlal Nehru  University',
-          years: '2007-2012'
-      },
-      {
-          position: 'Postdoctoral Researcher',
-          company: 'Bodh Gaya  Research Institute',
-          years: '2004-2007'
-      }
-  ]
-};
-
-
-hod42 = {
-  name: 'Harshit Sharma',
-  department: 'Creative Arts and Design',
-  photo : '205121042',
-  email: 'dr.harshit@urbanpro.edu',
-  phone: '555-1236',
-  bio: 'Harshit Sharma is the Head of the Business and Entrepreneurship Department at UrbanPro.',
-  work: [
-      {
-          position: 'Associate Professor',
-          company: 'Oxford University',
-          years: '2010-2022'
-      },
-      {
-          position: 'Assistant Professor',
-          company: 'Canbridge University',
-          years: '2005-2010'
-      },
-      {
-          position: 'Postdoctoral Researcher',
-          company: 'Hyderabad Research Institute',
-          years: '2002-2005'
-      }
-  ]
-};
-
-hod106 = {
-  name: 'Yashita Khandelwal',
-  department: 'Marketing and Sales',
-  photo : '205121106',
-  email: 'Dr.yashita@urban.edu',
-  phone: '555-1235',
-  bio: 'Yashita Khandelwal is the Head of the Marketing and Sales Department at Example University.',
-  work: [
-      {
-          position: 'Associate Professor',
-          company: 'Banaras Hindu University',
-          years: '2012-2022'
-      },
-      {
-          position: 'Assistant Professor',
-          company: 'Jawaharlal Nehru  University',
-          years: '2007-2012'
-      },
-      {
-          position: 'Postdoctoral Researcher',
-          company: 'Bodh Gaya  Research Institute',
-          years: '2004-2007'
-      }
-  ]
-};
-
-// hod ejs
-app.get('/hod/:id', (req, res) => {
-
-  const id = req.params.id;
-  // console.log(id);
-  let hod;
-  if(id==='32') hod=hod32;
-  else if(id==='28') hod=hod28;
-  else if(id==='42') hod=hod42;
-  else hod=hod106;
-
-  console.log(hod);
-  // render the profile page with the HOD information
-  res.render('hod', { hod: hod });
-});
-
 
 
 app.listen(3000, function() {
