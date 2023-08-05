@@ -2,7 +2,12 @@
 
 <link rel="stylesheet" href="/css/style_tutor.css">
 <body>
+  <% if(user && user.role === 'tutor') {%>
     <h1>The courses you are Offering are:</h1>
+    <% } %>
+    <% else if(user && user.role === 'student') {%>
+      <h1>The courses you have bought:</h1>
+      <% } %>
     <ul>
         <!-- -->
         
