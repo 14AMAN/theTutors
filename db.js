@@ -49,22 +49,7 @@ const coursesSchema = new schema({
     courseName: String,
     fees :Number,
     reviews: [reviewSchema],
-    ratings: {
-        type: {
-          fiveStar: { type: Number, default: 0 },
-          fourStar: { type: Number, default: 0 },
-          threeStar: { type: Number, default: 0 },
-          twoStar: { type: Number, default: 0 },
-          oneStar: { type: Number, default: 0 }
-        },
-        default: {
-          fiveStar: 0,
-          fourStar: 0,
-          threeStar: 0,
-          twoStar: 0,
-          oneStar: 0
-        }
-      },
+    
       videos: [videoSchema],
       average_rating : {
         type: Number,

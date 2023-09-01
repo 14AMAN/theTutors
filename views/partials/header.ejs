@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Courses Selling Website</title>
+    <title>The Tutors</title>    
+    <link rel="icon" href="images/favicon_io/favicon.ico" type="image/x-icon">
     <style>
       /* Styling for header and banner */
       
@@ -17,60 +18,63 @@
 
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         
-        <a class="navbar-brand" href="/">
-            <img src="images/logo.jpg" width="70" height="45" alt="Logo">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse " id="navbarNav">
-            
-            <ul class="navbar-nav ml-auto ">
+      <a class="navbar-brand" href="/">
+          <img src="/images/logo.jpg" width="70" height="45" alt="Logo" style="margin-left: 30%;">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse " id="navbarNav">
+          
+        <ul class="navbar-nav ml-auto ">
 
-                <li class="nav-item" style="margin-right: 5px;">
-                    <% if (user && user.role==="tutor") { %>
-                        <a class="nav-link" href="/addcourses" style="background-color: rgb(201, 201, 245); color: red;">Add Courses</a>
-                      <% } else { %>
-                        
-                    <a class="nav-link" href="/signupasatutor">Sign up as tutor</a>
+            <li class="nav-item" style="margin-right: 5px;">
+                <% if (!user) { %>                                          
+                <a class="nav-link" href="/signupasatutor">Sign up as tutor</a>
+                  <% } %>
+            </li>             
+            <li class="nav-item">
+                <% if (user) { %>
+                    <a class="nav-link" href="/<%=user.role  %>-profile"><%= user.name %></a>
+                  <% } else { %>
+                    <a class="nav-link" href="/login">Login</a>
+                  <% } %>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Options
+                </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <% if (user) { %>
+                          <a class="dropdown-item" href="/<%=user.role  %>-profile"><%= user.name %></a>
+                        <% } else { %>
+                          <a class="dropdown-item" href="/login">Login</a>
+                        <% } %>
+                      <% if(user && user.role==='student'){ %>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="/managecourses">Your Courses</a>                        
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="/courses/all">All Courses</a>
+                      <div class="dropdown-divider"></div>
                       <% } %>
-                </li>
-                <li class="nav-item">
-                  <% if (user && user.role==="tutor") { %>
-                      <a class="nav-link" href="/managecourses" style="background-color: rgb(154, 154, 201); color: red;">Manage Courses</a>
-                    <% } %>
-                  
-              </li>
-                
-                <li class="nav-item">
-                    <% if (user) { %>
-                        <a class="nav-link" href="/<%=user.role  %>-profile"><%= user.name %></a>
-                      <% } else { %>
-                        <a class="nav-link" href="/login">Login</a>
-                      <% } %>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Options
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <% if (user) { %>
-                            <a class="dropdown-item" href="/<%=user.role  %>-profile"><%= user.name %></a>
-                          <% } else { %>
-                            <a class="dropdown-item" href="/login">Login</a>
+                      <% if(user && user.role==='tutor'){ %>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/addcourses">Add Courses</a>                        
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/managecourses">Manage Courses</a>
+                        <div class="dropdown-divider"></div>
+                        <% } %>
+                      <a class="dropdown-item" href="/successstories">Success Stories</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="/writereview">Write Review</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="/helpcenter">Help Center</a>
+                      <div class="dropdown-divider"></div>
+                      <% if(user){ %>                        
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                        <% } else{ %>
+                          <button type="submit" class="btn btn-primary compose-btn" value="/signupasatutor">Sign up as tutor</button>
                           <% } %>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/successstories">Success Stories</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/courses/paid">Paid Courses</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/courses/free">Free Courses</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/writereview">Write Review</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/helpcenter">Help Center</a>
-                        <div class="dropdown-divider"></div>
-                        <button type="submit" class="btn btn-primary compose-btn" value="/signupasatutor">Sign up as tutor</button>
                     </div>
                 </li>
             </ul>

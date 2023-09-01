@@ -294,7 +294,7 @@ app.post("/tuttor_signup", function(req, res) {
   if (password !== confirm_password) {
     res.render("tuttor_signup",{ msg: "Password and confirm password do not match" });
 
-  }
+  }else{
   console.log(req.body.name);
 
 console.log("tutor");
@@ -316,7 +316,7 @@ console.log("tutor");
       
     }}
     save();
-    
+  }
   });
   
   function sendResetPasswordEmail(email, resetToken) {
@@ -511,13 +511,19 @@ app.get('/managecourses',function(req,res){
 });
 // courses 
 app.get('/course/:param',function(req,res){
-  if (req.isAuthenticated()&& req.user.role === 'tutor') {
+  if (req.isAuthenticated()) {
     const id = req.params.param;
 courseDB.findById(id)
   .then(course => {
     // console.log(course);
+    if(req.user.role === 'tutor'){
     res.render("updateCourse", { msg: "", course: course });
-  })
+    }
+    if(req.user.role === 'student'){   
+                
+        res.render("boughtCourses",{videos:course.videos,id:id});
+    }
+})
   .catch(err => {
     console.error(err);
     res.status(404).send("Course not found");
@@ -578,13 +584,9 @@ app.get('/videolibrary/:param',async function(req,res){
   if(req.isAuthenticated() && req.user.role === 'tutor'){
     const id = req.params.param;
     courseDB.findById(id).then(course=>{
-    res.render("videolibrary",{videos:course.videos,id:id});
+    res.render("videolibrary",{videos:course.videos,id:id});   
 });
-      // let videos = course.videos;
-      // console.log(course);
-      
-     
-  } else {
+} else {
     res.redirect('/login');
   }
   
@@ -627,6 +629,162 @@ app.post('/videolibrary/:param', upload.single('video'), async (req, res) => {
     res.redirect('/login');
   }
 });
+
+
+// add courses`
+app.get('/addcourses',function(req,res){
+  if (req.isAuthenticated()&& req.user.role === 'tutor') {
+  res.render('addcourse');
+  }else{
+  res.redirect("/login");
+
+  }
+});
+app.post('/addcourses',function(req,res){
+  if (req.isAuthenticated()&& req.user.role === 'tutor') {
+    const { courseName, fees, classs, description } = req.body;
+  // new course added in course then pushed in tutors.
+  const addCourse = new courseDB({
+    courseName, fees, classs, description,teacher:req.user._id ,  teacher_name: req.user.name });
+  addCourse.save().then(savedCourse => {
+    
+    // Update the tutor's course array
+    return tutor.findOneAndUpdate(
+      { _id: req.user._id },
+      { $push: { course: savedCourse } },
+      { new: true }
+    );
+  })
+  .then(updatedTutor => {
+    // Tutor updated with the new course
+    // console.log("Tutor updated:", updatedTutor);
+
+    // Redirect or send response indicating success
+    res.redirect("/addcourses");
+  })
+  .catch(error => {
+    // Handle the error
+    console.error("Error adding course:", error);
+    res.status(500).send("Failed to add course.");
+  });
+
+}else{
+  res.redirect("/login");
+}
+});
+
+// Views Courses to students
+
+app.get("/courses/:param",function(req,res){
+  let param = req.params.param;
+  let msg=""
+  let msgUn=""
+  if(param.length > 2){
+    if(param[2]==='1'){
+      msg = "Transaction Successful"
+    }
+    else{
+      msgUn = "Transaction Unsuccessful"
+    }
+    if(param[1] === " ") {
+      param = param[0]
+    }
+    else{
+      param = param[0] + param[1]
+    }
+  }
+async function getCoursesByClass(className) {
+  try {
+    const courses = await courseDB.find({ classs: "Class "+className });
+    return courses;
+  } catch (error) {
+    console.error('Error retrieving courses:', error);
+    throw error;
+  }
+}
+
+
+getCoursesByClass(param)
+  .then(courses => {
+    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});
+    
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+  
+   
+  
+});
+
+
+// Success Stories page
+app.get("/successstories",function(req,res){
+  story.find({}).then( result =>{
+
+      res.render("successstories",{stories:result});
+  });
+});
+app.get('/addstories',function(req,res){
+  res.render('addstories');
+});
+app.post('/addstories',function(req,res){
+  const title = req.body.title;
+  const author = req.body.author;
+  const content = req.body.content;
+
+  const addStory = new story({
+    title: title,
+    author : author,
+    content: content
+  });
+  addStory.save();
+  res.redirect('/addstories');
+});
+
+
+// routing to post
+
+app.get("/post/:param",function(req,res){
+
+async function post(){
+await story.find({_id:req.params.param}).then(
+  result => {
+    res.render("post",{data:result[0]});
+  }
+);}
+post();
+
+
+});
+
+//writereview
+
+  app.get('/writereview',function(req,res){
+    res.render('review');
+  });
+// help
+
+app.get('/helpcenter',function(req,res){
+  res.render('help');
+});
+
+//search 
+app.post('/search',function(req,res){
+  tutor.find({ courseName : req.body.cours}).then(result=>{
+    console.log(result.length);
+    if(result.length===0){
+      res.render('index', {msg:"No such Course."})
+    }
+    else{
+    res.render('searchcourse',{course:result});
+  }
+});
+});
+
+
+// payment
 function getCourseDetails(courseId) {
   return courseDB.findById(courseId)
     .exec()
@@ -654,7 +812,6 @@ function createOrder(amountInPaisa) {
         console.error(err);
         reject(new Error('An error occurred while creating the order.'));
       } else {
-        console.log(order);
         resolve(order);
       }
     });
@@ -697,6 +854,7 @@ async function handlePaymentSuccess(paymentId, courseId, sID, name, _class) {
   try {
     // Assuming you have a 'transaction' object that interacts with your database
     const courseData = { courseId: courseId, paymentId: paymentId, std: sID, stdName: name };
+        
     // Check if the payment ID exists in the database
     const existingTransaction = await transaction.findOne({ paymentId: paymentId });
     let existingCourse;
@@ -708,13 +866,44 @@ if (!existingTransaction && !existingCourse) {
 
   const newTransaction = new transaction(courseData);
   await newTransaction.save();
-  const studentData = { _id: sID, name: name, purchasedCourse: [courseData] };
-  
-    // Assuming you have a 'student' object representing the student's collection in your database
+  // Assuming you have a 'student' object representing the student's collection in your database
     // Here, 'coursesSchema' is the schema definition for courses in your database
-    await student.updateOne({ _id: sID }, { $push: { purchasedCourse: courseData } });
+    // Assuming you have imported the necessary modules and set up your database connection
+
+async function copyCourse(courseId) {
+  try {
+    // Use await with findById to find the course by its ID
+    const copyCourse = await courseDB.findById(courseId);
+
+    // Check if the course was found
+    if (!copyCourse) {
+      console.log("Course not found");
+      return;
+    }
+
+    // Create a new course object using the found course data
+    const courseInStudent = new courseDB({
+      _id: copyCourse._id,
+      courseName: copyCourse.courseName,
+      description: copyCourse.description,
+      teacher_name: copyCourse.teacher_name,
+    });
+
+    // Use await to save the new course object to the database
+    await student.updateOne({ _id: sID }, { $push: { purchasedCourse: courseInStudent } });
     console.log('Course added to student successfully.');
   console.log('New transaction created and saved:');
+
+    console.log("Course copied and saved successfully!");
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+// Call the copyCourse function with the courseId
+copyCourse(courseId);
+
+    
   return 1;
 } else {
   console.log('Payment ID already exists in the database.');
@@ -732,225 +921,33 @@ if (!existingTransaction && !existingCourse) {
 app.get('/payment-success', (req, res) => {
   if(req.isAuthenticated() && req.user.role=='student'){
   // Handle the success case here, e.g., update the payment status in the database
-  // const paymentId = req.query.payment_id;
-  // const courseId = req.query.courseId;
-  // const _class = req.query.classs;
-    // Decryption function
-    
-    // function decrypt(encryptedData) {
-    //   const decrypted = CryptoJS.AES.decrypt(encryptedData, 'my-secret-key');
-    //   return decrypted.toString(CryptoJS.enc.Utf8);
-    // }
-  // const paymentId = decrypt(req.query.epayment_id);
-  // const courseId = decrypt(req.query.ecourseId);
-  // const _class = decrypt(req.query.eclasss);
+  
   const paymentId = req.query.epayment_id;
   const courseId = req.query.ecourseId;
+  console.log(courseId);
   const _class = req.query.eclasss;
 console.log(paymentId + "payment Id")
   // You would need to implement a function to handle payment success and update the database
   async function execute(){
   let _success = await handlePaymentSuccess(paymentId, courseId ,req.user._id, req.user.name,_class );
-  
-async function getCoursesByClass(className) {
-  try {
-    const courses = await courseDB.find({ classs: className });
-    return courses;
-  } catch (error) {
-    console.error('Error retrieving courses:', error);
-    throw error;
-  }
-}
   console.log(_success);
   if(_success === 1){
-    getCoursesByClass(_class)
-  .then(courses => {
+    
     let _link = "/courses/"+_class[6]+" 1"
     console.log(_link)
     res.redirect(_link);
-    // res.render('searchcourse',{course:courses , msg:"Transaction Successful" , msgUn:""});
     
-  })
-  .catch(error => {
-    console.error(error);
-  });
-
-  }
-  else{
-    getCoursesByClass(_class)
-  .then(courses => {
-    // res.render('searchcourse',{course:courses , msg: "",msgUn:"Illegal Purchase" });
+  }else{
     let _link = "/courses/"+_class[6]+" 0"
     console.log(_link)
     res.redirect(_link);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-}
   }
+}
   execute();
   // res.send('Payment successful!'); // You can redirect to a success page instead
   }else{
     res.redirect("/login");
   }
-});
-
-
-// Success Stories page
-app.get("/successstories",function(req,res){
-    story.find({}).then( result =>{
-
-        res.render("successstories",{stories:result});
-    });
-});
-
-// routing to post
-
-app.get("/post/:param",function(req,res){
-  
-  async function post(){
-  await story.find({_id:req.params.param}).then(
-    result => {
-      res.render("post",{data:result[0]});
-    }
-  );}
-  post();
-
-  
-  });
-
-// add courses`
-app.get('/addcourses',function(req,res){
-  if (req.isAuthenticated()&& req.user.role === 'tutor') {
-  res.render('addcourse');
-  }else{
-  res.redirect("/login");
-
-  }
-});
-app.post('/addcourses',function(req,res){
-  if (req.isAuthenticated()&& req.user.role === 'tutor') {
-    const { courseName, fees, classs, description } = req.body;
-  
-  const addCourse = new courseDB({
-    courseName, fees, classs, description,teacher:req.user._id ,  teacher_name: req.user.name });
-  addCourse.save().then(savedCourse => {
-    // Course saved successfully
-    // console.log("Course saved:", savedCourse);
-
-    // Update the tutor's course array
-    return tutor.findOneAndUpdate(
-      { _id: req.user._id },
-      { $push: { course: savedCourse } },
-      { new: true }
-    );
-  })
-  .then(updatedTutor => {
-    // Tutor updated with the new course
-    // console.log("Tutor updated:", updatedTutor);
-
-    // Redirect or send response indicating success
-    res.redirect("/addcourses");
-  })
-  .catch(error => {
-    // Handle the error
-    console.error("Error adding course:", error);
-    res.status(500).send("Failed to add course.");
-  });
-
-}else{
-  res.redirect("/login");
-}
-});
-
-// Views Courses to students
-
-app.get("/courses/:param",function(req,res){
-  let param = req.params.param;
-  let msg=""
-  let msgUn=""
-  if(param.length > 2){
-    console.log(param[1] , param[0])
-    if(param[2]==='1'){
-      msg = "Transaction Successful"
-    }
-    else{
-      msgUn = "Transaction Unsuccessful"
-    }
-    if(param[1] === " ") {
-      param = param[0]
-    }
-    else{
-      param = param[0] + param[1]
-    }
-  }
-async function getCoursesByClass(className) {
-  try {
-    const courses = await courseDB.find({ classs: "Class "+className });
-    return courses;
-  } catch (error) {
-    console.error('Error retrieving courses:', error);
-    throw error;
-  }
-}
-
-
-getCoursesByClass(param)
-  .then(courses => {
-    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});
-    
-  })
-  .catch(error => {
-    console.error(error);
-  });
-
-  
-   
-  
-});
-
-
-app.get('/addstories',function(req,res){
-  res.render('addstories');
-});
-app.post('/addstories',function(req,res){
-  const title = req.body.title;
-  const author = req.body.author;
-  const content = req.body.content;
-
-  const addStory = new story({
-    title: title,
-    author : author,
-    content: content
-  });
-  addStory.save();
-  res.redirect('/addstories');
-});
-
-//writereview
-
-  app.get('/writereview',function(req,res){
-    res.render('review');
-  });
-// help
-
-app.get('/helpcenter',function(req,res){
-  res.render('help');
-});
-
-//search 
-app.post('/search',function(req,res){
-  console.log(_.lowerCase(req.body.cours));
-  tutor.find({ courseName : req.body.cours}).then(result=>{
-    console.log(result.length);
-    if(result.length===0){
-      res.render('index', {msg:"No such Course."})
-    }
-    else{
-    res.render('searchcourse',{course:result});
-  }
-});
 });
 
 
