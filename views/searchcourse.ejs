@@ -55,10 +55,17 @@
   button:hover {
     background-color: #0062cc;
   }
+  .success{
+    color: green;
+  }
+  .unSuccess{
+    color: red;
+  }
 </style>
 <% if (course.length > 0) { %>
   <h1><u>Available Courses for <%= course[0].classs  %></u></h1>
-  
+  <p class="success"><%= msg %></p>
+  <p class="unSuccess"><%= msgUn %></p>
     <h3>Tutors:</h3>
     <% course.forEach(function(tutor) { %>
       <div class="container">
@@ -73,7 +80,7 @@
             <p><strong>Price :</strong> Rs.<%= tutor.fees %></p>
           </div>
           <div class="col-sm">
-            <form onsubmit="event.preventDefault(); makePayment('<%= tutor._id %>', '<%= tutor.fees %>');">
+            <form onsubmit="event.preventDefault(); makePayment('<%= tutor._id %>', '<%= tutor.fees %>' , '<%= course[0].classs  %>');">
               <input type="hidden" name="courseId" value="<%= tutor._id %>">
               <input type="hidden" name="amount" value="<%= tutor.fees %>">
               <% if (user) { %>
@@ -99,10 +106,15 @@
   <% } else { %>
     <p>Finding teachers for this class</p>
   <% } %>
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
-    function makePayment(courseId, amount) {
+    function encrypt(data, secretKey) {
+    const encrypted = CryptoJS.AES.encrypt(data, secretKey);
+    return encrypted.toString();
+  }
+    function makePayment(courseId, amount, classs) {
       
       fetch('/payment', {
         method: 'POST',headers: {
@@ -121,8 +133,19 @@
     order_id: order.id,
     // handling the success
     handler: function (response) {
+      // console.log(process.env.RAZORPAY_KEY_ID);
     const paymentId = response.razorpay_payment_id;
-    window.location.href = `/payment-success?payment_id=${paymentId}&courseId=${courseId}`;
+    // const encryptionKey = 'my-secret-key'; // Replace with your actual secret key
+    // const encryptedPaymentId = encrypt(paymentId, encryptionKey);
+    // const encryptedCourseId = encrypt(courseId, encryptionKey);
+    // const encryptedClasss = encrypt(classs, encryptionKey);
+    const encryptedPaymentId = paymentId;
+    const encryptedCourseId = courseId;
+    const encryptedClasss = classs;
+
+    const encryptedUrl = `/payment-success?epayment_id=${encryptedPaymentId}&ecourseId=${encryptedCourseId}&eclasss=${encryptedClasss}`;
+    window.location.href = encryptedUrl;
+
 },
 
   };

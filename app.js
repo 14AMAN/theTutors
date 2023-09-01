@@ -9,6 +9,7 @@ const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
+const CryptoJS = require('crypto-js');
 const app = express();
 // upload files
 const multer  = require('multer')
@@ -19,6 +20,9 @@ dotenv.config(); // Load environment variables from .env file
 // razorpay
 const Razorpay = require('razorpay');
 
+// // async-await
+// const util = require('util');
+// const decryptAsync = util.promisify(decrypt);
 
 // Import the crypto module
 const crypto = require('crypto');
@@ -157,11 +161,6 @@ app.post("/login", function(req, res, next) {
     res.redirect("/login");
   }
 });
-
-
-
-
-
 
 // Profile page
 app.get("/student-profile", function(req, res) {
@@ -496,9 +495,15 @@ foundUser.save(function(err) {
 
 // tutor course manager
 app.get('/managecourses',function(req,res){
-  if (req.isAuthenticated()&& req.user.role === 'tutor') {
+  if (req.isAuthenticated()) {
     // console.log(req.user.course);
+    if(req.user.role === 'tutor'){
     res.render("managecourses",{msg:"",courses:req.user.course});
+    }
+    else if(req.user.role === 'student'){
+    res.render("managecourses",{msg:"",courses:req.user.purchasedCourse});
+
+    }
   }
   else{
     res.redirect("login");
@@ -688,21 +693,33 @@ app.post('/payment', (req, res) => {
   res.redirect("/login");
 }
 });
-async function handlePaymentSuccess(paymentId, courseId, sID, name) {
+async function handlePaymentSuccess(paymentId, courseId, sID, name, _class) {
   try {
     // Assuming you have a 'transaction' object that interacts with your database
     const courseData = { courseId: courseId, paymentId: paymentId, std: sID, stdName: name };
+    // Check if the payment ID exists in the database
+    const existingTransaction = await transaction.findOne({ paymentId: paymentId });
+    let existingCourse;
 
-    // Use the Transaction model to create a new document and save it to the database
-    const tranc = new transaction(courseData);
-    await tranc.save();
-    console.log('Transaction saved successfully.');
+    if(existingTransaction){
+      existingCourse = existingTransaction.courseId;
+    }
+if (!existingTransaction && !existingCourse) {
 
+  const newTransaction = new transaction(courseData);
+  await newTransaction.save();
+  const studentData = { _id: sID, name: name, purchasedCourse: [courseData] };
+  
     // Assuming you have a 'student' object representing the student's collection in your database
     // Here, 'coursesSchema' is the schema definition for courses in your database
-    const studentData = { _id: sID, name: name, courses: [courseData] };
-    await student.updateOne({ _id: sID }, { $push: { courses: courseData } });
+    await student.updateOne({ _id: sID }, { $push: { purchasedCourse: courseData } });
     console.log('Course added to student successfully.');
+  console.log('New transaction created and saved:');
+  return 1;
+} else {
+  console.log('Payment ID already exists in the database.');
+  return 0;
+}    
   } catch (error) {
     console.error('Error while saving transaction and updating student:', error);
     // You can handle the error here or rethrow it to let the calling code handle it
@@ -715,12 +732,65 @@ async function handlePaymentSuccess(paymentId, courseId, sID, name) {
 app.get('/payment-success', (req, res) => {
   if(req.isAuthenticated() && req.user.role=='student'){
   // Handle the success case here, e.g., update the payment status in the database
-  const paymentId = req.query.payment_id;
-  const courseId = req.query.courseId;
+  // const paymentId = req.query.payment_id;
+  // const courseId = req.query.courseId;
+  // const _class = req.query.classs;
+    // Decryption function
+    
+    // function decrypt(encryptedData) {
+    //   const decrypted = CryptoJS.AES.decrypt(encryptedData, 'my-secret-key');
+    //   return decrypted.toString(CryptoJS.enc.Utf8);
+    // }
+  // const paymentId = decrypt(req.query.epayment_id);
+  // const courseId = decrypt(req.query.ecourseId);
+  // const _class = decrypt(req.query.eclasss);
+  const paymentId = req.query.epayment_id;
+  const courseId = req.query.ecourseId;
+  const _class = req.query.eclasss;
+console.log(paymentId + "payment Id")
   // You would need to implement a function to handle payment success and update the database
-  handlePaymentSuccess(paymentId, courseId ,req.user._id, req.user.name );
+  async function execute(){
+  let _success = await handlePaymentSuccess(paymentId, courseId ,req.user._id, req.user.name,_class );
+  
+async function getCoursesByClass(className) {
+  try {
+    const courses = await courseDB.find({ classs: className });
+    return courses;
+  } catch (error) {
+    console.error('Error retrieving courses:', error);
+    throw error;
+  }
+}
+  console.log(_success);
+  if(_success === 1){
+    getCoursesByClass(_class)
+  .then(courses => {
+    let _link = "/courses/"+_class[6]+" 1"
+    console.log(_link)
+    res.redirect(_link);
+    // res.render('searchcourse',{course:courses , msg:"Transaction Successful" , msgUn:""});
+    
+  })
+  .catch(error => {
+    console.error(error);
+  });
 
-  res.send('Payment successful!'); // You can redirect to a success page instead
+  }
+  else{
+    getCoursesByClass(_class)
+  .then(courses => {
+    // res.render('searchcourse',{course:courses , msg: "",msgUn:"Illegal Purchase" });
+    let _link = "/courses/"+_class[6]+" 0"
+    console.log(_link)
+    res.redirect(_link);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+}
+  }
+  execute();
+  // res.send('Payment successful!'); // You can redirect to a success page instead
   }else{
     res.redirect("/login");
   }
@@ -797,9 +867,24 @@ app.post('/addcourses',function(req,res){
 // Views Courses to students
 
 app.get("/courses/:param",function(req,res){
-  const param = req.params.param;
-  
-
+  let param = req.params.param;
+  let msg=""
+  let msgUn=""
+  if(param.length > 2){
+    console.log(param[1] , param[0])
+    if(param[2]==='1'){
+      msg = "Transaction Successful"
+    }
+    else{
+      msgUn = "Transaction Unsuccessful"
+    }
+    if(param[1] === " ") {
+      param = param[0]
+    }
+    else{
+      param = param[0] + param[1]
+    }
+  }
 async function getCoursesByClass(className) {
   try {
     const courses = await courseDB.find({ classs: "Class "+className });
@@ -813,7 +898,7 @@ async function getCoursesByClass(className) {
 
 getCoursesByClass(param)
   .then(courses => {
-    res.render('searchcourse',{course:courses})
+    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});
     
   })
   .catch(error => {
