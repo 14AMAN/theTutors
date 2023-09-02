@@ -8,13 +8,13 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const mongoose = require("mongoose");
 
 // connection
-mongoose.connect("mongodb://127.0.0.1:27017/UrbanProDB",{
+// mongoose.connect("mongodb://127.0.0.1:27017/UrbanProDB",{
   
-useNewUrlParser: true,
-useUnifiedTopology: true
-})
-.then(() => console.log('Database connected successfully'))
-.catch((err) => console.error('Database connection error: ', err));
+// useNewUrlParser: true,
+// useUnifiedTopology: true
+// })
+// .then(() => console.log('Database connected successfully'))
+// .catch((err) => console.error('Database connection error: ', err));
 
 const schema = mongoose.Schema;
 

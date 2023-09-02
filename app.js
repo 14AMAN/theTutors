@@ -55,6 +55,7 @@ const upload = multer({ storage: storage });
 
 const { 
   courseDB, story,tutor,student,transaction,notification,review,videos } = require('./db');
+const { default: mongoose } = require("mongoose");
 
 
 
@@ -950,9 +951,13 @@ console.log(paymentId + "payment Id")
   }
 });
 
-
-app.listen(process.env.PORT, function() {
-  console.log(`Server started on port 3000 ${process.env.PORT}`);
-});
+const  start = async() => {
+  await mongoose.connect('mongodb+srv://aman7869211:OYOiYLN1AbP1LaEA@cluster0.zrmi4vs.mongodb.net/?retryWrites=true&w=majority');
+  app.listen(process.env.PORT, function() {
+  
+    console.log(`Server started on port ${process.env.PORT}`);
+  });
+} 
+start();
 
 
