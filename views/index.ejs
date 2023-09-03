@@ -1,84 +1,198 @@
 <%- include("partials/header")-%>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-image: url(../images/course_bg.jpg);
-  }
-  .banner{
-    width: 100%;
-  }
-  .card-body{
-    background-color:beige;
-    
-  }
-</style>
 
-<% if(!user || user.role=='student'){ %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <style>
+    /* Common styles for all screen sizes */
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url(../images/course_bg.jpg);
+    }
+    .banner {
+      width: 100%;
+      /* border-radius: 50%; */
+      opacity: 90%;
+    }
+    .card-body {
+      background-color: beige;
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+
+    /* Mobile-first styles */
+    @media (max-width: 768px) {
+      .banner {
+        /* Adjust mobile styles here */
+      }
+      .card-body {
+        /* Adjust card styles for mobile here */
+      }
+      /* Add more mobile-specific styles here */
+    }
+
+    /* Tablet and larger screen styles */
+    @media (min-width: 769px) {
+      .banner {
+        /* Adjust tablet and larger screen styles here */
+      }
+      .card-body {
+        /* Adjust card styles for tablets and larger screens here */
+      }
+      /* Add more tablet and larger screen-specific styles here */
+    }
+  </style>
+</head>
+<body>
+  <!-- Your existing HTML content here -->
+
   <div class="banner">
-    <h1 class="text-center" style="padding-bottom: 10px;">Learn something new today</h1>
-    <p class="text-center">Choose from our wide selection of courses</p>
-    <form class="d-flex justify-content-center" action="/search" method="post">
-      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="cours">
-      <button class="btn btn-danger" type="submit">Search</button>
-    </form>
-    <small style="color: red;"><i><%= msg %></i></small>
-    <div class="text-center">
-      <a href="/course/all">View Courses</a>
-    </div>
+    <h1 class="text-center" style="padding-bottom: 10px; margin-left: 40%;">Learn something new today</h1>
+    <p class="text-center" style="padding-bottom: 10px; margin-left: 40%;">Choose from our wide selection of courses</p>
   </div>
   
   <div class="container">
-  <div class="text-center" style="margin-top: 40px; margin-bottom: 5px;">
-    <h4 style="padding: 10px; margin-bottom: 15px; font-size: xx-large;">Categories of courses available.</h4>
-  </div>
-
-  <div class="row">
-    <% for(let i=0 ; i<3 ; i++){ %>
-    <div class="col-lg-3 col-md-4 col-sm-6">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h3 class="card-title">Class: <%= i*4+1 %></h3>
-          <form method="get" action="/courses/<%= i*4+1%>">
-            <button type="submit" class="btn btn-primary btn-block" value="class <%= i*4+1  %>">View Courses</button>
-          </form>
-        </div>
-      </div>
+    <div class="text-center" style="margin-top: 40px; margin-bottom: 5px;">
+      <h4 style="padding: 10px; margin-bottom: 15px; font-size: xx-large;">Categories of courses available.</h4>
     </div>
 
-    <div class="col-lg-3 col-md-4 col-sm-6">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h3 class="card-title">Class: <%= i*4+2 %></h3>
-          <form method="get" action="/courses/<%= i*4+2%>">
-            <button type="submit" class="btn btn-primary btn-block" value="class <%= i*4+2  %>">View Courses</button>
-          </form>
+    
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 1</h4>
+            
+            <form method="get" action="/courses/1">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 1">View Course</button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 2</h4>
+            
+            <form method="get" action="/courses/2">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 2">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 3</h4>
+            
+            <form method="get" action="/courses/3">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 3">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 4</h4>
+            
+            <form method="get" action="/courses/4">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 4">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 5</h4>
+            
+            <form method="get" action="/courses/5">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 5">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 6</h4>
+            
+            <form method="get" action="/courses/6">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 6">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 7</h4>
+            
+            <form method="get" action="/courses/7">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 7">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 8</h4>
+            
+            <form method="get" action="/courses/8">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 8">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 9</h4>
+            
+            <form method="get" action="/courses/9">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 9">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 10</h4>
+            
+            <form method="get" action="/courses/10">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 10">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 11</h4>
+            
+            <form method="get" action="/courses/11">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 11">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h4 class="card-title">Class 12</h4>
+            
+            <form method="get" action="/courses/12">
+              <button type="submit" class="btn btn-primary btn-block" value="Course 12">View Course</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
 
-    <div class="col-lg-3 col-md-4 col-sm-6">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h3 class="card-title">Class: <%= i*4+3 %></h3>
-          <form method="get" action="/courses/<%= i*4+3%>">
-            <button type="submit" class="btn btn-primary btn-block" value="class <%= i*4+3  %>">View Courses</button>
-          </form>
-        </div>
-      </div>
     </div>
-
-    <div class="col-lg-3 col-md-4 col-sm-6">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h3 class="card-title">Class: <%= i*4+4 %></h3>
-          <form method="get" action="/courses/<%= i*4+4%>">
-            <button type="submit" class="btn btn-primary btn-block" value="class <%= i*4+4  %>">View Courses</button>
-          </form>
-        </div>
-      </div>
-    </div>
-    <% }} %>
-  </div>
 
   <% if(user && user.role=='tutor'){ %>
     <h1 style="margin-left: 10%; margin-top: 5%;">Welcome <%= user.name  %> !!</h1>
@@ -92,7 +206,11 @@
         <a class="nav-link" href="/managecourses" style="width: 20%;font-size: xx-large; color: darkslategrey; margin-left: 5%;"> Manage Courses</a>
       </li>
     </ul>
-    <% } %>
-</div>
+  <% } %>
+
+  <!-- Include footer and any other content here -->
+
+
+
 
 <%- include("partials/footer")-%>
