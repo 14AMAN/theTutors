@@ -20,7 +20,7 @@
     }
 
     /* Mobile-first styles */
-    @media (max-width: 768px) {
+    @media (max-width: 500px) {
       .banner {
         /* Adjust mobile styles here */
       }
@@ -28,6 +28,12 @@
         /* Adjust card styles for mobile here */
       }
       /* Add more mobile-specific styles here */
+      #banner-text1{
+        margin-right: 45%;
+      }
+      #banner-text2{
+        margin-right: 45%;
+      }
     }
 
     /* Tablet and larger screen styles */
@@ -39,17 +45,37 @@
         /* Adjust card styles for tablets and larger screens here */
       }
       /* Add more tablet and larger screen-specific styles here */
+      #banner-text1{
+        margin-left: 40%;
+      }
+      #banner-text2{
+        margin-left: 40%;
+      }
     }
   </style>
 </head>
 <body>
   <!-- Your existing HTML content here -->
 
-  <div class="banner">
-    <h1 class="text-center" style="padding-bottom: 10px; margin-left: 40%;">Learn something new today</h1>
-    <p class="text-center" style="padding-bottom: 10px; margin-left: 40%;">Choose from our wide selection of courses</p>
-  </div>
   
+  
+  <% if(user && user.role=='tutor'){ %>
+    <h1 style="margin-left: 10%; margin-top: 5%;">Welcome <%= user.name  %> !!</h1>
+    <br>
+    <ul>
+      <li>
+        <a class="nav-link" href="/addcourses" style="width: 20%;  font-size: xx-large; color: darkslategray; margin-left: 5%;"> Add Courses</a>
+      </li>
+      <br>
+      <li>
+        <a class="nav-link" href="/managecourses" style="width: 20%;font-size: xx-large; color: darkslategrey; margin-left: 5%;"> Manage Courses</a>
+      </li>
+    </ul>
+    <% } else{%>
+      <div class="banner">
+        <h1 class="text-center" id="banner-text1" style="padding-bottom: 10px; ">Learn something new today</h1>
+        <p class="text-center" id="banner-text2" style="padding-bottom: 10px;">Choose from our wide selection of courses</p>
+      </div>
   <div class="container">
     <div class="text-center" style="margin-top: 40px; margin-bottom: 5px;">
       <h4 style="padding: 10px; margin-bottom: 15px; font-size: xx-large;">Categories of courses available.</h4>
@@ -194,19 +220,7 @@
 
     </div>
 
-  <% if(user && user.role=='tutor'){ %>
-    <h1 style="margin-left: 10%; margin-top: 5%;">Welcome <%= user.name  %> !!</h1>
-    <br>
-    <ul>
-      <li>
-        <a class="nav-link" href="/addcourses" style="width: 20%;  font-size: xx-large; color: darkslategray; margin-left: 5%;"> Add Courses</a>
-      </li>
-      <br>
-      <li>
-        <a class="nav-link" href="/managecourses" style="width: 20%;font-size: xx-large; color: darkslategrey; margin-left: 5%;"> Manage Courses</a>
-      </li>
-    </ul>
-  <% } %>
+    <% }%>
 
   <!-- Include footer and any other content here -->
 

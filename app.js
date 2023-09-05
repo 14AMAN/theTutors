@@ -680,14 +680,34 @@ app.get("/courses/:param",function(req,res){
   let param = req.params.param;
   let msg=""
   let msgUn=""
-  if(param.length > 2){
-    if(param[2]==='1'){
+  if(param === 'all'){
+    
+async function getCoursesByClass(className) {
+  try {
+    const courses = await courseDB.find({});
+    return courses;
+  } catch (error) {
+    console.error('Error retrieving courses:', error);
+    throw error;
+  }
+}
+getCoursesByClass(param)
+  .then(courses => {
+    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});    
+  })
+  .catch(error => {
+    console.error(error);
+  }); 
+  }
+  else if(param.length > 2){
+    if(param[param.length-1]==='1'){
       msg = "Transaction Successful"
     }
     else{
       msgUn = "Transaction Unsuccessful"
     }
     if(param[1] === " ") {
+      console.log(param);
       param = param[0]
     }
     else{
@@ -703,27 +723,17 @@ async function getCoursesByClass(className) {
     throw error;
   }
 }
-
-
 getCoursesByClass(param)
   .then(courses => {
-    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});
-    
+    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});    
   })
   .catch(error => {
     console.error(error);
-  });
-
-  
-   
-  
+  });  
 });
-
-
 // Success Stories page
 app.get("/successstories",function(req,res){
   story.find({}).then( result =>{
-
       res.render("successstories",{stories:result});
   });
 });
@@ -734,7 +744,6 @@ app.post('/addstories',function(req,res){
   const title = req.body.title;
   const author = req.body.author;
   const content = req.body.content;
-
   const addStory = new story({
     title: title,
     author : author,
@@ -743,12 +752,8 @@ app.post('/addstories',function(req,res){
   addStory.save();
   res.redirect('/addstories');
 });
-
-
 // routing to post
-
 app.get("/post/:param",function(req,res){
-
 async function post(){
 await story.find({_id:req.params.param}).then(
   result => {
@@ -756,8 +761,6 @@ await story.find({_id:req.params.param}).then(
   }
 );}
 post();
-
-
 });
 
 //writereview
@@ -858,12 +861,11 @@ async function handlePaymentSuccess(paymentId, courseId, sID, name, _class) {
         
     // Check if the payment ID exists in the database
     const existingTransaction = await transaction.findOne({ paymentId: paymentId });
+    const alreadyBought = await transaction.findOne({courseId: courseId, std: sID });
     let existingCourse;
-
-    if(existingTransaction){
-      existingCourse = existingTransaction.courseId;
-    }
-if (!existingTransaction && !existingCourse) {
+    console.log(alreadyBought)
+    
+if (!existingTransaction && !alreadyBought) {
 
   const newTransaction = new transaction(courseData);
   await newTransaction.save();
@@ -932,17 +934,20 @@ console.log(paymentId + "payment Id")
   async function execute(){
   let _success = await handlePaymentSuccess(paymentId, courseId ,req.user._id, req.user.name,_class );
   console.log(_success);
-  if(_success === 1){
-    
-    let _link = "/courses/"+_class[6]+" 1"
-    console.log(_link)
-    res.redirect(_link);
-    
-  }else{
-    let _link = "/courses/"+_class[6]+" 0"
-    console.log(_link)
-    res.redirect(_link);
+  let _cls = _class[6];
+  if(_class.length===8) {
+    _cls = _cls + _class[7]
   }
+  if(_success === 1){
+  let _link = "/courses/"+_cls+" 1"
+  console.log(_link)
+  res.redirect(_link);
+  
+}else{
+  let _link = "/courses/"+_cls+" 0"
+  console.log(_link)
+  res.redirect(_link);
+}
 }
   execute();
   // res.send('Payment successful!'); // You can redirect to a success page instead

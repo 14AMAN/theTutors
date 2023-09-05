@@ -70,9 +70,9 @@ const notifySchema = new schema({
 });
 // Transaction
 const transactionSchema = new schema({
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'course' },
+  courseId: String,
   paymentId: String,
-  std: { type: mongoose.Schema.Types.ObjectId, ref: 'student' },
+  std: String,
   stdName: String,
  
 });
