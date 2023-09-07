@@ -1,7 +1,13 @@
-# theTutors
-1. The purpose of project was to learn Nodejs, Express, MongoDB and connected libraries.
-2. The project is integrated with Razorpay-API, in test-mode, and you won't have to actually pay the price, for buying any course.
-3. Used Passport for authentication.
-4. Multer for video upload, locally into the server, where it is hosted. WebApp goes down if it remains unused for long time.
-5. Due to above case the videos are getting wiped, it has to be stored in some cloud like AWS, Azure, etc.
-6. The dynamic pages are prepared using EJS.
+#theTutor
+About the Project:
+1. Created as a personal project to learn and demonstrate proficiency in Node.js, Express, MongoDB, and related libraries.
+2. Integrated with the Razorpay API in test mode to allow users to explore the platform without making actual payments for course purchases.
+3. Implemented authentication using Passport.js for enhanced security.
+4. Utilized Multer for local video uploads, but faced server downtime issues for long-unused videos, highlighting the need for cloud storage solutions like AWS or Azure.
+5. Developed dynamic pages using EJS for an interactive user experience.
+   
+Key Contributions:
+
+1. Designed and developed a full-stack web application.
+2. Gained hands-on experience with Node.js, Express, MongoDB, Razorpay API, Passport.js, Multer, EJS, and cloud storage services.
+3. Addressed server downtime challenges, proposing a solution for video storage in the cloud.
