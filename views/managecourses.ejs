@@ -5,7 +5,7 @@
   .card-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: center;
     gap: 20px; /* Adjust the gap as needed */
     padding: 20px; /* Add padding to the container */
     
@@ -19,41 +19,32 @@
   }
 </style>
 <body>
-  <div class="container">
+  
+  
   <% if(user && user.role === 'tutor') {%>
     <h1 class="text-center">The courses you are Offering are:</h1> 
-    <div class="row">
-      <% courses.forEach(course => { %> 
-        <div class="col-md-4 mb-4">
-          <div class="card mx-2"> <!-- Added mx-2 class for left and right margin -->
-            <div class="card-body"  >
-              <h3 class="card-title"><%= course.courseName %></h3>
-              <p class="card-text"><%= course.description %></p>
-              <a href="/course/<%= course._id %>" class="btn btn-primary">View Course</a>
-            </div>
-          </div>
-        </div>
-      <% }); %>
-    </div>
-  <% } %>
+    <% } %>
+    <% if(user && user.role === 'student') {%>
+      <h1 class="text-center">The courses you have purchased are:</h1>
 
-  <!-- for student -->
-  <% if(user && user.role === 'student') {%>
-    <h1 class="text-center">The courses you have purchased are:</h1>
-    <div class="row ">
+      <% } %>
+    <div class="card-container">
+    
       <% courses.forEach(course => { %> 
-        <div class="col-md-4 mb-4">
-          <div class="card mx-2"> <!-- Added mx-2 class for left and right margin -->
-            <div class="card-body">
+      
+            <div class="card"  >
               <h3 class="card-title"><%= course.courseName %></h3>
               <p class="card-text"><%= course.description %></p>
               <a href="/course/<%= course._id %>" class="btn btn-primary">View Course</a>
             </div>
-          </div>
-        </div>
+          
       <% }); %>
     </div>
-  <% } %>
+ 
+
+  
+ 
+  
   </div>
 </body>
 
