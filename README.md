@@ -1,4 +1,5 @@
 #theTutor
+
 About the Project:
 1. Created as a personal project to learn and demonstrate proficiency in Node.js, Express, MongoDB, and related libraries.
 2. Integrated with the Razorpay API in test mode to allow users to explore the platform without making actual payments for course purchases.
