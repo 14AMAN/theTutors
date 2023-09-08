@@ -1,4 +1,5 @@
 <%- include("partials/header")-%>
+
 <style>
   body {
     background-image: url(../images/course_bg.jpg);
@@ -7,20 +8,13 @@
     padding: 0;
   }
 
-  /* existing styles */
-
   h1 {
     font-size: 36px;
     margin: 20px;
-    font-size: 36px;
-    /* margin: 20px; */
-    color: #333; /* new style */
-    text-align: center; /* new style */
-    text-decoration: underline; /* new style */
+    color: #333;
+    text-align: center;
+    text-decoration: underline;
   }
-
-  /* existing styles */
-
 
   h2 {
     font-size: 30px;
@@ -55,77 +49,79 @@
   button:hover {
     background-color: #0062cc;
   }
-  .success{
+
+  .success {
     color: green;
   }
-  .unSuccess{
+
+  .unSuccess {
     color: red;
   }
+
+  /* Add styles for cards */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Adjust the gap as needed */
+    padding: 20px; /* Add padding to the container */
+    
+  }
+
+  .card {
+    width: 300px; /* Adjust the card width as needed */
+    margin: 0;
+    padding: 15px;
+    background-color: rgb(209, 233, 233);
+  }
 </style>
-<% if (course.length > 0) { %>
-  <% if (all.length > 0) { %>
-    <% course.sort(function(a, b) {
-      const classA = parseInt(a.classs.match(/\d+/)[0]);
-      const classB = parseInt(b.classs.match(/\d+/)[0]);
 
-      // Compare the numeric parts as numbers
-      return classA - classB;
-    });
-    %>
-    <h1><u>All The Courses Available:  %></u></h1>
-  <% }else{ %>
-  <h1><u>Available Courses for <%= course[0].classs  %></u></h1>
-  <% } %>
-  <p class="success"><%= msg %></p>
-  <p class="unSuccess"><%= msgUn %></p>
+<body>
+  <% if (course.length > 0) { %>
+    <% if (all.length > 0) { %>
+      <% course.sort(function (a, b) {
+        const classA = parseInt(a.classs.match(/\d+/)[0]);
+        const classB = parseInt(b.classs.match(/\d+/)[0]);
+        return classA - classB;
+      }); %>
+      <h1><u>All The Courses Available:</u></h1>
+    <% } else { %>
+      <h1><u>Available Courses for <%= course[0].classs %></u></h1>
+    <% } %>
+    <p class="success"><%= msg %></p>
+    <p class="unSuccess"><%= msgUn %></p>
     <h3>Tutors:</h3>
-    <% course.forEach(function(tutor) { %>
-      <div class="container">
-        <div class="row">
-          <div class="col-sm">
-            <h4><%= tutor.courseName %></h4>
-          </div>
-          <div class="col-sm">
-            <p><strong>Tutor :</strong> <%= tutor.teacher_name %></p>
-          </div>
-          <% if(all.length > 0){ %>
-          <div class="col-sm">
+    <div class="card-container">
+      <% course.forEach(function (tutor) { %>
+        <div class="card">
+          <h4><%= tutor.courseName %></h4>
+          <p><strong>Tutor :</strong> <%= tutor.teacher_name %></p>
+          <% if (all.length > 0) { %>
             <p><strong><%= tutor.classs.slice(0, 5) %>: <%= tutor.classs.slice(5) %></strong></p>
-
-          </div>
           <% } %>
-          <div class="col-sm">
-            <p><strong>Price :</strong> Rs.<%= tutor.fees %></p>
-          </div>
-          <div class="col-sm">
-            <form onsubmit="event.preventDefault(); makePayment('<%= tutor._id %>', '<%= tutor.fees %>' , '<%= course[0].classs  %>');">
-              <input type="hidden" name="courseId" value="<%= tutor._id %>">
-              <input type="hidden" name="amount" value="<%= tutor.fees %>">
-              <% if (user) { %>
-                <button type="submit">Buy</button>
-              <% } else { %>
-                <button type="submit"  onclick="redirectToLogin()">Please log in to proceed</button>
-              <% } %>
-              
-              <script>
-                function redirectToLogin() {
-                  window.location.href = '/login'; // Replace '/login' with the actual login page URL
-                }
-              </script>
-              
-              
-              
-            </form>
-            
-          </div>
+          <p><strong>Price :</strong> Rs.<%= tutor.fees %></p>
+          <form onsubmit="event.preventDefault(); makePayment('<%= tutor._id %>', '<%= tutor.fees %>', '<%= tutor.classs %>');">
+            <input type="hidden" name="courseId" value="<%= tutor._id %>">
+            <input type="hidden" name="amount" value="<%= tutor.fees %>">
+            <% if (user) { %>
+              <button type="submit">Buy</button>
+            <% } else { %>
+              <button type="submit" onclick="redirectToLogin()">Please log in to proceed</button>
+            <% } %>
+            <script>
+              function redirectToLogin() {
+                window.location.href = '/login'; 
+              }
+            </script>
+          </form>
         </div>
-      </div>
-    <% }); %>
+      <% }); %>
+    </div>
   <% } else { %>
     <p>Finding teachers for this class</p>
   <% } %>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     function encrypt(data, secretKey) {
@@ -160,7 +156,7 @@
     const encryptedPaymentId = paymentId;
     const encryptedCourseId = courseId;
     const encryptedClasss = classs;
-
+      console.log(encryptedClasss);
     const encryptedUrl = `/payment-success?epayment_id=${encryptedPaymentId}&ecourseId=${encryptedCourseId}&eclasss=${encryptedClasss}`;
     window.location.href = encryptedUrl;
 
@@ -192,3 +188,5 @@
 <%- include("partials/footer")-%>
 
 
+
+    

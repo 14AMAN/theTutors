@@ -682,7 +682,7 @@ app.get("/courses/:param",function(req,res){
   let msgUn=""
   if(param === 'all'){
     
-async function getCoursesByClass(className) {
+    async function getCoursesByClass(className) {
   try {
     const courses = await courseDB.find({});
     return courses;
@@ -707,14 +707,31 @@ getCoursesByClass(param)
       msgUn = "Transaction Unsuccessful"
     }
     if(param[1] === " ") {
-      console.log(param);
+      console.log(param + "yaha");
       param = param[0]
     }
     else{
       param = param[0] + param[1]
     }
+    async function getCoursesByClass(className) {
+      try {
+        const courses = await courseDB.find({ classs: "Class "+className });
+        return courses;
+      } catch (error) {
+        console.error('Error retrieving courses:', error);
+        throw error;
+      }
+    }
+    getCoursesByClass(param)
+      .then(courses => {
+        res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn, all:""});    
+      })
+      .catch(error => {
+        console.error(error);
+      });  
+    
   }else{
-async function getCoursesByClass(className) {
+    async function getCoursesByClass(className) {
   try {
     const courses = await courseDB.find({ classs: "Class "+className });
     return courses;
@@ -907,7 +924,7 @@ async function copyCourse(courseId) {
 // Call the copyCourse function with the courseId
 copyCourse(courseId);
 
-    
+
   return 1;
 } else {
   console.log('Payment ID already exists in the database.');

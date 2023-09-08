@@ -16,6 +16,8 @@ const mongoose = require("mongoose");
 // .then(() => console.log('Database connected successfully'))
 // .catch((err) => console.error('Database connection error: ', err));
 
+
+
 const schema = mongoose.Schema;
 
 // stories

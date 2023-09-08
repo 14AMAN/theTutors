@@ -1,43 +1,247 @@
 <%- include("partials/header")-%>
 
-<link rel="stylesheet" href="/css/style_tutor.css">
-<body>
-  <!-- Table to display existing videos -->
-  
-  <% if (videos) { %>
-    <h2>Existing Videos</h2>
-    <% if (videos.length > 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-            
-            <th>Video</th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          <% videos.forEach(video => { %>
-            <tr>
-              <td><%= video.title %></td>
-              <td><%= video.description %></td>
-              
-              <td>
-                <video width="320" height="240" controls>
-                    <source src="/uploads/<%= video.filename %>" type="<%= video.contentType %>">
-                  Your browser does not support the video tag.
-                </video>
-              </td>
-             
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    <% } %>
-    <% } %>
-</body>
 
+<style>
+  body {
+      background-image: url(../images/course_bg.jpg);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+  }
+
+  h1 {
+      font-size: 36px;
+      margin: 20px;
+      color: #333;
+      text-align: center;
+      text-decoration: underline;
+  }
+
+  h2 {
+      font-size: 30px;
+      margin: 10px 0;
+  }
+
+  h4 {
+      font-size: 18px;
+      margin: 5px 0;
+      margin-left: 2px;
+  }
+
+  p {
+      margin: 10px 0;
+  }
+
+  form {
+      display: inline-block;
+      margin-left: 10px;
+  }
+
+  button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+  }
+
+  button:hover {
+      background-color: #0062cc;
+  }
+
+  .success {
+      color: green;
+  }
+
+  .unSuccess {
+      color: red;
+  }
+
+  /* Add styles for cards */
+  .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px; /* Adjust the gap as needed */
+      padding: 20px; /* Add padding to the container */
+  }
+
+  .card {
+      width: 620px; /* Adjust the card width as needed */
+      margin: 0;
+      background-color: #fff; /* Background color for cards */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for cards */
+      border-radius: 5px; /* Rounded corners for cards */
+  }
+
+  .card-body {
+      padding: 20px;
+      background-color: rgb(209, 233, 233);
+  }
+
+  .video-container {
+      position: relative;
+      max-width: 100%;
+  }
+
+  #custom-video {
+      width: 100%;
+      max-height: auto;
+  }
+
+  .controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: opacity 1s; /* Hide controls with fade-out effect */
+  }
+
+  .controls.hidden {
+      opacity: 0;
+      pointer-events: none; /* Hide controls and disable interaction */
+  }
+
+  .controls button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+  }
+
+  #progress-container {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+  }
+
+  #progress-bar {
+      flex-grow: 1;
+      margin: 0 10px;
+  }
+
+  #current-time,
+  #duration {
+      color: white;
+      font-size: 12px;
+  }
+
+  /* Full-screen button */
+  .full-screen-button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+  }
+</style>
+
+<body>
+<!-- Table to display existing videos -->
+<% if (videos) { %>
+<h2 class="text-center">Existing Videos</h2>
+<% if (videos.length > 0) { %>
+<div class="card-container">
+  <% videos.forEach(video => { %>
+  <div class="card">
+      <div class="card-body">
+          <h4><%= video.title %></h4>
+          <p><%= video.description %></p>
+          <div class="video-container">
+              <video id="custom-video" preload="metadata">
+                  <source src="/uploads/<%= video.filename %>" type="<%= video.contentType %>">
+                  Your browser does not support the video tag.
+              </video>
+              <div id="custom-controls" class="controls">
+                  <button id="play-pause-button">Play/Pause</button>
+                  <div id="progress-container">
+                      <input id="progress-bar" type="range" min="0" max="100" value="0">
+                      <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+                  </div>
+                  <button id="full-screen-button" class="full-screen-button">Full Screen</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <% }) %>
+</div>
+<% } %>
+<% } %>
+
+<script>
+  const video = document.getElementById('custom-video');
+  const playButton = document.getElementById('play-pause-button');
+  const progressBar = document.getElementById('progress-bar');
+  const currentTime = document.getElementById('current-time');
+  const duration = document.getElementById('duration');
+  const controls = document.getElementById('custom-controls');
+  const fullScreenButton = document.getElementById('full-screen-button');
+
+  let controlsTimeout; // Variable to track control visibility timeout
+
+  // Play/Pause video
+  playButton.addEventListener('click', () => {
+      if (video.paused || video.ended) {
+          video.play();
+      } else {
+          video.pause();
+      }
+  });
+
+  // Update progress bar and time display
+  video.addEventListener('timeupdate', () => {
+      const currentTimeValue = formatTime(video.currentTime);
+      const durationValue = formatTime(video.duration);
+      currentTime.textContent = currentTimeValue;
+      duration.textContent = durationValue;
+      const progress = (video.currentTime / video.duration) * 100;
+      progressBar.value = progress;
+  });
+
+  // Seek video when progress bar is clicked
+  progressBar.addEventListener('input', () => {
+      const seekTime = (progressBar.value / 100) * video.duration;
+      video.currentTime = seekTime;
+  });
+
+  // Format time as MM:SS
+  function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  }
+
+  // Toggle full screen
+  fullScreenButton.addEventListener('click', () => {
+      if (video.requestFullscreen) {
+          video.requestFullscreen();
+      } else if (video.mozRequestFullScreen) {
+          video.mozRequestFullScreen();
+      } else if (video.webkitRequestFullscreen) {
+          video.webkitRequestFullscreen();
+      }
+  });
+
+  // Hide controls after a few seconds of inactivity
+  video.addEventListener('mousemove', () => {
+      clearTimeout(controlsTimeout);
+      controls.classList.remove('hidden');
+      controlsTimeout = setTimeout(() => {
+          controls.classList.add('hidden');
+      }, 3000); // Hide controls after 3 seconds of inactivity
+  });
+
+  // Hide controls initially
+  controls.classList.add('hidden');
+</script>
+</body>
 
 
 

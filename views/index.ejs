@@ -116,141 +116,19 @@
 
     
     <div class="row">
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 1</h4>
-            
-            <form method="get" action="/courses/1">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 1">View Course</button>
-            </form>
+      <% for(let i=1 ; i<13 ; i++){ %>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+          <div class="card mb-3">
+            <div class="card-body">
+              <h4 class="card-title">Class <%= i %></h4>
+              
+              <form method="get" action="/courses/<%= i %>">
+                <button type="submit" class="btn btn-primary btn-block" value="Course <%= i  %>">View Course</button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 2</h4>
-            
-            <form method="get" action="/courses/2">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 2">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 3</h4>
-            
-            <form method="get" action="/courses/3">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 3">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 4</h4>
-            
-            <form method="get" action="/courses/4">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 4">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 5</h4>
-            
-            <form method="get" action="/courses/5">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 5">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 6</h4>
-            
-            <form method="get" action="/courses/6">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 6">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 7</h4>
-            
-            <form method="get" action="/courses/7">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 7">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 8</h4>
-            
-            <form method="get" action="/courses/8">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 8">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 9</h4>
-            
-            <form method="get" action="/courses/9">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 9">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 10</h4>
-            
-            <form method="get" action="/courses/10">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 10">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 11</h4>
-            
-            <form method="get" action="/courses/11">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 11">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">Class 12</h4>
-            
-            <form method="get" action="/courses/12">
-              <button type="submit" class="btn btn-primary btn-block" value="Course 12">View Course</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      
-
+        <% } %>
     </div>
 
     <% }%>

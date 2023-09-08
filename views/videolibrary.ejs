@@ -1,11 +1,97 @@
 <%- include("partials/header") -%>
-<link rel="stylesheet" href="/css/style_tutor.css" />
+
+
+<style>
+  body {
+    background-image: url(../images/course_bg.jpg);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 36px;
+    margin: 20px;
+    color: #333;
+    text-align: center;
+    text-decoration: underline;
+  }
+
+  h2 {
+    font-size: 30px;
+    margin: 10px 0;
+  }
+
+  h4 {
+    font-size: 18px;
+    margin: 5px 0;
+    margin-left: 2px;
+  }
+
+  p {
+    margin: 10px 0;
+  }
+
+  form {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+  }
+
+  button:hover {
+    background-color: #0062cc;
+  }
+
+  .success {
+    color: green;
+  }
+
+  .unSuccess {
+    color: red;
+  }
+
+  /* Add styles for cards */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Adjust the gap as needed */
+    padding: 20px; /* Add padding to the container */
+  }
+  
+  .card {
+    width: 320px; /* Adjust the card width as needed */
+    margin: 0;
+    background-color: rgb(209, 233, 233); /* Background color for cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for cards */
+    border-radius: 5px; /* Rounded corners for cards */
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+  <link rel="stylesheet" href="/css/style_tutor.css" />
 
 <body>
   <h1>Video Library</h1>
 
   <!-- Form to add a new video -->
-  <h2>Add New Video</h2>
+  <h2 style="margin-left: 30%;">Add New Video</h2>
   <form
     action="/videolibrary/<%= id %>"
     method="POST"
@@ -22,46 +108,29 @@
 
     <input type="submit" value="Add Video" />
   </form>
-
   <!-- Table to display existing videos -->
-
   <% if (videos) { %>
-  <h2>Existing Videos</h2>
-  <% if (videos.length > 0) { %>
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Filename</th>
-        <th>Video</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% videos.forEach(video => { %>
-      <tr>
-        <td><%= video.title %></td>
-        <td><%= video.description %></td>
-        <td><%= video.filename %></td>
-        <td>
-          <video width="320" height="240" controls>
-            <source
-              src="/uploads/<%= video.filename %>"
-              type="<%= video.contentType %>"
-            />
-            Your browser does not support the video tag.
-          </video>
-        </td>
-        <td>
-          <a href="/videolibrary/<%= video._id %>/edit">Edit</a>
-          <a href="/videolibrary/<%= video._id %>/delete">Delete</a>
-        </td>
-      </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } %> <% } %>
+    <h2 class="text-center">Existing Videos</h2>
+    <% if (videos.length > 0) { %>
+      <div class="card-container">
+        <% videos.forEach(video => { %>
+          <div class="card">
+            <div class="card-body">
+              <h4><%= video.title %></h4>
+              <p><%= video.description %></p>
+              <div class="video-container">
+                <video controls>
+                  <source src="/uploads/<%= video.filename %>" type="<%= video.contentType %>">
+                  Your browser does not support the video tag.
+                </video>
+
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  <% } %>
 </body>
 
-<%- include("partials/footer") -%>
+<%- include("partials/footer")-%>
