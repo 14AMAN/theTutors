@@ -1,35 +1,53 @@
 <%- include("partials/header")-%>
 
 <link rel="stylesheet" href="/css/style_tutor.css">
+<style>
+  .container{
+    position: relative;
+    left: 50%;
+    transform: translateX(-56%);
+  }
+  .card-body{
+    background-color: rgb(209, 233, 233);
+  }
+</style>
 <body>
+  <div class="container">
   <% if(user && user.role === 'tutor') {%>
-    <h1>The courses you are Offering are:</h1> 
-    <ul style="margin-left: 8%;">        
+    <h1 class="text-center">The courses you are Offering are:</h1> 
+    <div class="row justify-content-center">
       <% courses.forEach(course => { %> 
-        <li style="margin-bottom: 1em;">
-          <h3><%= course.courseName %></h3>
-          <p><%= course.description %></p>
-          <a href="/course/<%= course._id %>">View Course</a>
-        </li>
+        <div class="col-md-4 mb-4">
+          <div class="card mx-2"> <!-- Added mx-2 class for left and right margin -->
+            <div class="card-body"  >
+              <h3 class="card-title"><%= course.courseName %></h3>
+              <p class="card-text"><%= course.description %></p>
+              <a href="/course/<%= course._id %>" class="btn btn-primary">View Course</a>
+            </div>
+          </div>
+        </div>
       <% }); %>
-    </ul>
-    <% } %>
-    <!-- for student -->
-<% if(user && user.role === 'student') {%>
-  <h1>The courses you have purchased are:</h1>
-  <ul style="margin-left: 8%;">        
-    <% courses.forEach(course => { %> 
-      <li style="margin-bottom: 1em;">
-        <h3><%= course.courseName %></h3>
-        <p><%= course.description %></p>
-        <a href="/course/<%= course._id %>">View Course</a>
-      </li>
-    <% }); %>
-  </ul>
+    </div>
   <% } %>
+
+  <!-- for student -->
+  <% if(user && user.role === 'student') {%>
+    <h1 class="text-center">The courses you have purchased are:</h1>
+    <div class="row justify-content-center">
+      <% courses.forEach(course => { %> 
+        <div class="col-md-4 mb-4">
+          <div class="card mx-2"> <!-- Added mx-2 class for left and right margin -->
+            <div class="card-body">
+              <h3 class="card-title"><%= course.courseName %></h3>
+              <p class="card-text"><%= course.description %></p>
+              <a href="/course/<%= course._id %>" class="btn btn-primary">View Course</a>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+  </div>
 </body>
-
-
-
 
 <%- include("partials/footer")-%>
