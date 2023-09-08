@@ -9,6 +9,11 @@ body{
     color: white;
     padding: 10px;
   }
+  /* .nav-link {
+    font-size: 18px; 
+    color: #333; 
+     margin-right: 10px; 
+   } */ 
 
   .banner {
     background-image: url("../images/banner.webp");

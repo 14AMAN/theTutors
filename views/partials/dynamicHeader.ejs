@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         
         <a class="navbar-brand" href="/">
-            <img src="/images/logo.jpg" width="70" height="45" alt="Logo">
+            <img src="/images/logo.jpg" width="70" height="45" alt="Logo" style="margin-left: 30%;">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -53,6 +53,8 @@
                             <!-- <div class="dropdown-divider"></div> -->
                             <a class="dropdown-item" href="/login">Login</a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/courses/all">All Courses</a>
+                          <div class="dropdown-divider"></div>
                           <% } %>
                         <% if(user && user.role==='student'){ %>
                         <!-- <div class="dropdown-divider"></div> -->
