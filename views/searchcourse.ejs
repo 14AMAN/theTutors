@@ -62,13 +62,15 @@
   .card-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 20px; /* Adjust the gap as needed */
     padding: 20px; /* Add padding to the container */
+    justify-content: left;
+    margin-left: 10%;
     
   }
-
+  
   .card {
+    
     width: 350px; /* Adjust the card width as needed */
     margin: 0;
     padding: 15px;
@@ -90,7 +92,7 @@
     <% } %>
     <p class="success"><%= msg %></p>
     <p class="unSuccess"><%= msgUn %></p>
-    <h3>Tutors:</h3>
+    <h3 style="margin-left: 10%;">Tutors:</h3>
     <div class="card-container">
       <% course.forEach(function (tutor) { %>
         <div class="card">
