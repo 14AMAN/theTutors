@@ -63,7 +63,19 @@
   }
 </style>
 <% if (course.length > 0) { %>
+  <% if (all.length > 0) { %>
+    <% course.sort(function(a, b) {
+      const classA = parseInt(a.classs.match(/\d+/)[0]);
+      const classB = parseInt(b.classs.match(/\d+/)[0]);
+
+      // Compare the numeric parts as numbers
+      return classA - classB;
+    });
+    %>
+    <h1><u>All The Courses Available:  %></u></h1>
+  <% }else{ %>
   <h1><u>Available Courses for <%= course[0].classs  %></u></h1>
+  <% } %>
   <p class="success"><%= msg %></p>
   <p class="unSuccess"><%= msgUn %></p>
     <h3>Tutors:</h3>
@@ -76,6 +88,12 @@
           <div class="col-sm">
             <p><strong>Tutor :</strong> <%= tutor.teacher_name %></p>
           </div>
+          <% if(all.length > 0){ %>
+          <div class="col-sm">
+            <p><strong><%= tutor.classs.slice(0, 5) %>: <%= tutor.classs.slice(5) %></strong></p>
+
+          </div>
+          <% } %>
           <div class="col-sm">
             <p><strong>Price :</strong> Rs.<%= tutor.fees %></p>
           </div>
