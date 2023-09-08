@@ -693,7 +693,7 @@ async function getCoursesByClass(className) {
 }
 getCoursesByClass(param)
   .then(courses => {
-    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});    
+    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn,all:"all"});    
   })
   .catch(error => {
     console.error(error);
@@ -713,7 +713,7 @@ getCoursesByClass(param)
     else{
       param = param[0] + param[1]
     }
-  }
+  }else{
 async function getCoursesByClass(className) {
   try {
     const courses = await courseDB.find({ classs: "Class "+className });
@@ -725,11 +725,12 @@ async function getCoursesByClass(className) {
 }
 getCoursesByClass(param)
   .then(courses => {
-    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn});    
+    res.render('searchcourse',{course:courses , msg:msg, msgUn:msgUn, all:""});    
   })
   .catch(error => {
     console.error(error);
   });  
+}
 });
 // Success Stories page
 app.get("/successstories",function(req,res){
