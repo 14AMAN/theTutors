@@ -13,11 +13,24 @@
       /* border-radius: 50%; */
       opacity: 90%;
     }
-    .card-body {
-      background-color: beige;
-      padding-left: 5%;
-      padding-right: 5%;
-    }
+    .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    margin-left:10%;
+    gap: 20px; /* Adjust the gap as needed */
+    padding: 20px; /* Add padding to the container */
+    
+  }
+
+  .card-body {
+    width: 250px; /* Adjust the card width as needed */
+    margin: 0;
+    padding: 1%;
+    margin-right: 2%;
+    gap: 10px;
+    background-color: rgb(209, 233, 233);
+  }
 
     /* Mobile-first styles */
     @media (max-width: 390px) {
@@ -115,19 +128,15 @@
     </div>
 
     
-    <div class="row">
-      <% for(let i=1 ; i<13 ; i++){ %>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-          <div class="card mb-3">
+    <div class="card-container">
+      <% for(let i=1 ; i<13 ; i++){ %>        
             <div class="card-body">
-              <h4 class="card-title">Class <%= i %></h4>
-              
+              <h4 class="card-title">Class <%= i %></h4>              
               <form method="get" action="/courses/<%= i %>">
-                <button type="submit" class="btn btn-primary btn-block" value="Course <%= i  %>">View Course</button>
+                <button type="submit" class="btn btn-primary btn-block button" value="Course <%= i  %>">View Course</button>
               </form>
             </div>
-          </div>
-        </div>
+          
         <% } %>
     </div>
 
