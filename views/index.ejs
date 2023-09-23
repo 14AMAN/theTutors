@@ -28,6 +28,7 @@
     margin: 0;
     padding: 1%;
     margin-right: 2%;
+    justify-content: center;
     gap: 10px;
     background-color: rgb(209, 233, 233);
   }
@@ -131,7 +132,7 @@
     <div class="card-container">
       <% for(let i=1 ; i<13 ; i++){ %>        
             <div class="card-body">
-              <h4 class="card-title">Class <%= i %></h4>              
+              <h4 class="card-title" style="padding-bottom: 3%; margin-bottom: 3%;">Class <%= i %></h4>              
               <form method="get" action="/courses/<%= i %>">
                 <button type="submit" class="btn btn-primary btn-block button" value="Course <%= i  %>">View Course</button>
               </form>
