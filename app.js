@@ -54,9 +54,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5174',
 }));
-
+app.get('/reload', (req, res) => {
+  res.json({ message: 'CORS configured correctly!' });
+});
 
 const { 
   courseDB, story,tutor,student,transaction,notification,review,videos } = require('./db');
