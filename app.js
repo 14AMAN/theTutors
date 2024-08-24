@@ -54,7 +54,7 @@ const upload = multer({ storage: storage });
 
 app.use(
   cors({
-    origin: "https://url-pinger-virid.vercel.app/",
+    origin: "https://url-pinger-virid.vercel.app",
   })
 );
 app.get("/reload", (req, res) => {
