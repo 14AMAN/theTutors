@@ -11,6 +11,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const CryptoJS = require('crypto-js');
 const app = express();
+const cors = require('cors');
 // upload files
 const multer  = require('multer')
 // environment varibale
@@ -51,6 +52,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+}));
 
 
 const { 
